@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class AuthService {
     private final UserRepository userRepository;
+    private final JwtService jwrService;
     public AuthResponse login(LoginRequest request)
     {
         return null;
@@ -29,7 +30,7 @@ public class AuthService {
                 .build();
         userRepository.save(user);
         return AuthResponse.builder()
-                .token(null)
+                .token(jwrService.getToken(user))
                 .build();
     }
 }
