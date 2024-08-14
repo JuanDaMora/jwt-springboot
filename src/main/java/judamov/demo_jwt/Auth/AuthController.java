@@ -1,4 +1,4 @@
-package Auth;
+package judamov.demo_jwt.Auth;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.PostMapping;
