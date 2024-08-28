@@ -4,10 +4,17 @@ import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
+import judamov.demo_jwt.User.User;
+import judamov.demo_jwt.User.UserRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
+import java.nio.charset.StandardCharsets;
 import java.security.Key;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -16,9 +23,11 @@ import java.util.function.Function;
 import io.jsonwebtoken.Jwts;
 
 @Service
+@RequiredArgsConstructor
 public class JwtService {
     private static final String SECRET_KEY="OASLK4N520LASNDASDPO342PASNVSDAAAS1123OASKFNVSA";
 
+    private final UserRepository userRepository;
     public String getToken(UserDetails user)
     {
         return getToken(new HashMap<>(),user);
@@ -43,11 +52,7 @@ public class JwtService {
     {
         return  getClaim(token, Claims::getSubject);
     }
-    public boolean isTokenValid(String token, UserDetails user)
-    {
-        final String username = getUsernameFromToken(token);
-        return (username.equals(user.getUsername())&& !isTokenExpired(token));
-    }
+
     private Claims getAllClaims(String token)
     {
         return Jwts
@@ -70,6 +75,39 @@ public class JwtService {
     private boolean isTokenExpired(String token)
     {
         return getExpiration(token).before(new Date());
+    }
+    public String hashToken(String token) {
+        try {
+            MessageDigest digest = MessageDigest.getInstance("SHA-256");
+            byte[] encodedHash = digest.digest(token.getBytes(StandardCharsets.UTF_8));
+            return bytesToHex(encodedHash);
+        } catch (NoSuchAlgorithmException e) {
+            throw new RuntimeException("Error generando hash del token", e);
+        }
+    }
+
+    private String bytesToHex(byte[] hash) {
+        StringBuilder hexString = new StringBuilder(2 * hash.length);
+        for (int i = 0; i < hash.length; i++) {
+            String hex = Integer.toHexString(0xff & hash[i]);
+            if (hex.length() == 1) {
+                hexString.append('0');
+            }
+            hexString.append(hex);
+        }
+        return hexString.toString();
+    }
+    public boolean isTokenValid(String token, UserDetails user) {
+        final String username = getUsernameFromToken(token);
+        if (!username.equals(user.getUsername()) || isTokenExpired(token)) {
+            return false;
+        }
+
+        User dbUser = userRepository.findByUsername(user.getUsername())
+                .orElseThrow(() -> new UsernameNotFoundException(user.getUsername()));
+        String tokenHash = hashToken(token);
+
+        return tokenHash.equals(dbUser.getTokenHash());
     }
 
 }

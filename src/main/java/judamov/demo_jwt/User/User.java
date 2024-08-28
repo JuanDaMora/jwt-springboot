@@ -26,7 +26,7 @@ public class User implements UserDetails {
     String lastname;
     String country;
     Role role;
-
+    private String tokenHash;
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return List.of(new SimpleGrantedAuthority((role.name())));

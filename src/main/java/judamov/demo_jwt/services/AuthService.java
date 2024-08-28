@@ -25,13 +25,21 @@ public class AuthService {
 
     public AuthResponse login(LoginRequest request)
     {
-        authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(request.getUsername(), request.getPassword()));
-        UserDetails user = userRepository.findByUsername(request.getUsername()).orElseThrow(() -> new UsernameNotFoundException(request.getUsername()));
+        authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(request.getUsername(), request.getPassword()));
+        User user = userRepository.findByUsername(request.getUsername())
+                .orElseThrow(() -> new UsernameNotFoundException(request.getUsername()));
+
         String token = jwtService.getToken(user);
+        String tokenHash = jwtService.hashToken(token);
+
+        user.setTokenHash(tokenHash);
+        userRepository.save(user);  // Actualiza el usuario con el hash del token
+
         return AuthResponse.builder()
                 .token(token)
                 .build();
-     }
+    }
     public AuthResponse register(RegisterRequest request)
     {
         User user = User.builder()
