@@ -14,22 +14,36 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name="user", uniqueConstraints = {@UniqueConstraint(columnNames= {"username"})})
+@Table(name="user", uniqueConstraints = {@UniqueConstraint(columnNames= {"documento"})})
 public class User implements UserDetails {
     @Id
     @GeneratedValue
     Integer Id;
+    @Column(unique=true)
+    String email;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "id_type_document", nullable = false)
+    private TypeDocument typeDocument;
     @Column(nullable = false)
-    String username;
+    String documento;
+    @Column(nullable = false)
     String password;
+    @Column(nullable = false)
     String firstname;
+    @Column(nullable = false)
     String lastname;
-    String country;
+    @Column(nullable = false)
+    Boolean status;
     Role role;
     private String tokenHash;
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return List.of(new SimpleGrantedAuthority((role.name())));
+    }
+
+    @Override
+    public String getUsername() {
+        return documento;
     }
 
     @Override

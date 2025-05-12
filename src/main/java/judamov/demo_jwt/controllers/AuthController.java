@@ -1,6 +1,6 @@
 package judamov.demo_jwt.Auth;
 
-import judamov.demo_jwt.services.AuthService;
+import judamov.demo_jwt.service.impl.AuthService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;

@@ -1,11 +1,11 @@
-package judamov.demo_jwt.services;
+package judamov.demo_jwt.service.impl;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
-import judamov.demo_jwt.User.User;
-import judamov.demo_jwt.User.UserRepository;
+import judamov.demo_jwt.entity.User;
+import judamov.demo_jwt.repository.IUserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -27,7 +27,7 @@ import io.jsonwebtoken.Jwts;
 public class JwtService {
     private static final String SECRET_KEY="OASLK4N520LASNDASDPO342PASNVSDAAAS1123OASKFNVSA";
 
-    private final UserRepository userRepository;
+    private final IUserRepository IUserRepository;
     public String getToken(UserDetails user)
     {
         return getToken(new HashMap<>(),user);
@@ -103,7 +103,7 @@ public class JwtService {
             return false;
         }
 
-        User dbUser = userRepository.findByUsername(user.getUsername())
+        User dbUser = IUserRepository.findByEmail(user.getUsername())
                 .orElseThrow(() -> new UsernameNotFoundException(user.getUsername()));
         String tokenHash = hashToken(token);
 
