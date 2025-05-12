@@ -1,6 +1,6 @@
 package judamov.demo_jwt.config;
 
-import judamov.demo_jwt.User.UserRepository;
+import judamov.demo_jwt.repository.IUserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -17,7 +17,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 @RequiredArgsConstructor
 public class ApplicationConfig {
 
-    private final UserRepository userRepository;
+    private final IUserRepository IUserRepository;
 
     @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration config) throws Exception
@@ -41,7 +41,7 @@ public class ApplicationConfig {
     @Bean
     public UserDetailsService userDetailService()
     {
-        return username -> userRepository.findByUsername(username)
+        return username -> IUserRepository.findByDocumento(username)
                 .orElseThrow(()-> new UsernameNotFoundException("Username not found"));
     }
 

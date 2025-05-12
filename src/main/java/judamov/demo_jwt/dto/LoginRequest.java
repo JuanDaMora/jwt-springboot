@@ -1,4 +1,4 @@
-package judamov.demo_jwt.Auth;
+package judamov.demo_jwt.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -11,7 +11,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class LoginRequest {
 
-    String username;
+    String documento;
     String password;
 
 }

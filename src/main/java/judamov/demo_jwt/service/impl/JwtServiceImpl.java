@@ -24,7 +24,7 @@ import io.jsonwebtoken.Jwts;
 
 @Service
 @RequiredArgsConstructor
-public class JwtService {
+public class JwtServiceImpl {
     private static final String SECRET_KEY="OASLK4N520LASNDASDPO342PASNVSDAAAS1123OASKFNVSA";
 
     private final IUserRepository IUserRepository;
@@ -103,7 +103,7 @@ public class JwtService {
             return false;
         }
 
-        User dbUser = IUserRepository.findByEmail(user.getUsername())
+        User dbUser = IUserRepository.findByDocumento(user.getUsername())
                 .orElseThrow(() -> new UsernameNotFoundException(user.getUsername()));
         String tokenHash = hashToken(token);
 

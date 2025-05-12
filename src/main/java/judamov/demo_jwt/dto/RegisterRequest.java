@@ -1,4 +1,4 @@
-package judamov.demo_jwt.Auth;
+package judamov.demo_jwt.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -10,9 +10,11 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class RegisterRequest {
-    String documento;
     String password;
-    String firstname;
-    String lastname;
-    String country;
+    Long idTipoDocumento;
+    String email;
+    String documento;
+    String firstName;
+    String lastName;
+    Boolean isProfesor;
 }

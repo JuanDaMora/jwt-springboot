@@ -1,11 +1,12 @@
-package judamov.demo_jwt.User;
+package judamov.demo_jwt.entity;
 
 import jakarta.persistence.*;
+import judamov.demo_jwt.enums.Role;
 import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
-
+import jakarta.transaction.Transactional;
 import java.util.Collection;
 import java.util.List;
 
@@ -13,6 +14,7 @@ import java.util.List;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@Transactional
 @Entity
 @Table(name="user", uniqueConstraints = {@UniqueConstraint(columnNames= {"documento"})})
 public class User implements UserDetails {
@@ -33,7 +35,7 @@ public class User implements UserDetails {
     @Column(nullable = false)
     String lastname;
     @Column(nullable = false)
-    Boolean status;
+    Boolean active;
     Role role;
     private String tokenHash;
     @Override

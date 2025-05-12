@@ -19,28 +19,28 @@ import java.security.SecureRandom;
 
 @Service
 @RequiredArgsConstructor
-public class AuthService {
+public class AuthServiceImpl {
     private static final String CHARACTERS = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
     private static final int LENGTH = 10;
     private static final SecureRandom random = new SecureRandom();
     private final IUserRepository userRepository;
     private final ITypeDocumentRepository typeDocumentRepository;
-    private final JwtService jwrService;
+    private final JwtServiceImpl jwrService;
     private final PasswordEncoder passwordEncoder;
     private final AuthenticationManager authenticationManager;
-    private final JwtService jwtService;
+    private final JwtServiceImpl jwtServiceImpl;
 
     public AuthResponse login(LoginRequest request)
     {
         authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(request.getUsername(), request.getPassword()));
-        User user = userRepository.findByEmail(request.getUsername())
-                .orElseThrow(() -> new UsernameNotFoundException(request.getUsername()));
+                new UsernamePasswordAuthenticationToken(request.getDocumento(), request.getPassword()));
+        User user = userRepository.findByDocumento(request.getDocumento())
+                .orElseThrow(() -> new UsernameNotFoundException(request.getDocumento()));
 
-        String token = jwtService.getToken(user);
-        String tokenHash = jwtService.hashToken(token);
+        String token = jwtServiceImpl.getToken(user);
+        String tokenHash = jwtServiceImpl.hashToken(token);
         Boolean isFirstLogin;
-        if(user.getTokenHash().isEmpty()){
+        if(user.getTokenHash()== null){
             isFirstLogin = true;
         }else {
             isFirstLogin = false;
@@ -70,11 +70,13 @@ public class AuthService {
         }
         User user = User.builder()
                 .documento(request.getDocumento())
-                .password(sb.toString())
+                .password(passwordEncoder.encode(request.getPassword()))
+                .email(request.getEmail())
                 .typeDocument(typeDocument)
-                .firstname(request.getFirstname())
-                .lastname(request.getLastname())
+                .firstname(request.getFirstName())
+                .lastname(request.getLastName())
                 .role(Role.DIRECTOR)
+                .active(true)
                 .build();
         userRepository.save(user);
         return sb.toString();
