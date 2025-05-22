@@ -1,8 +1,9 @@
-package judamov.demo_jwt.controllers;
+package judamov.demo_jwt.controllers.publicos;
 
 import judamov.demo_jwt.dto.AuthResponse;
 import judamov.demo_jwt.dto.LoginRequest;
 import judamov.demo_jwt.dto.RegisterRequest;
+import judamov.demo_jwt.dto.RegisterResponse;
 import judamov.demo_jwt.service.impl.AuthServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -14,7 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/auth")
 @RequiredArgsConstructor
-public class AuthController {
+public class AuthPublicController {
 
     private final AuthServiceImpl authServiceImpl;
 
@@ -24,7 +25,7 @@ public class AuthController {
     }
 
     @PostMapping(value="register")
-    public ResponseEntity<String> register(@RequestBody RegisterRequest request){
+    public ResponseEntity<RegisterResponse> register(@RequestBody RegisterRequest request){
         return ResponseEntity.ok(authServiceImpl.register(request));
     }
 }

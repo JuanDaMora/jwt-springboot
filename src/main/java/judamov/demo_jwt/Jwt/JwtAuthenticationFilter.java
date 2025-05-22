@@ -37,11 +37,12 @@ public class JwtAuthenticationFilter  extends OncePerRequestFilter {
         }
         username = jwtServiceImpl.getUsernameFromToken(token);
         if(username != null && SecurityContextHolder.getContext().getAuthentication() ==null){
-            UserDetails user= IUserRepository.findByDocumento(username).orElseThrow(() -> new UsernameNotFoundException("Username not found"));
+            UserDetails user = IUserRepository.findOneByDocumento(username)
+                    .orElseThrow(() -> new UsernameNotFoundException("Username not found"));
             if(jwtServiceImpl.isTokenValid(token,user))
             {
                 UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
-                        username,
+                        user,
                         null,
                         user.getAuthorities()
                 );

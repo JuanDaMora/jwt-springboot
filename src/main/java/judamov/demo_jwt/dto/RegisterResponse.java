@@ -9,8 +9,6 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class LoginRequest {
-    String documento;
+public class RegisterResponse {
     String password;
-    String repeatPassword;
 }

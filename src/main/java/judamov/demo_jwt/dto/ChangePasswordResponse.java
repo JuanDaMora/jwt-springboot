@@ -5,12 +5,10 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-@Data
 @Builder
+@Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class LoginRequest {
-    String documento;
-    String password;
-    String repeatPassword;
+public class ChangePasswordResponse {
+    private String token;
 }

@@ -1,11 +1,10 @@
 package judamov.demo_jwt.service.impl;
 
-import judamov.demo_jwt.dto.AuthResponse;
-import judamov.demo_jwt.dto.LoginRequest;
-import judamov.demo_jwt.dto.RegisterRequest;
+import judamov.demo_jwt.dto.*;
+import judamov.demo_jwt.entity.Role;
 import judamov.demo_jwt.entity.TypeDocument;
-import judamov.demo_jwt.enums.Role;
 import judamov.demo_jwt.entity.User;
+import judamov.demo_jwt.repository.IRoleRepository;
 import judamov.demo_jwt.repository.ITypeDocumentRepository;
 import judamov.demo_jwt.repository.IUserRepository;
 import lombok.RequiredArgsConstructor;
@@ -25,7 +24,7 @@ public class AuthServiceImpl {
     private static final SecureRandom random = new SecureRandom();
     private final IUserRepository userRepository;
     private final ITypeDocumentRepository typeDocumentRepository;
-    private final JwtServiceImpl jwrService;
+    private final IRoleRepository roleRepository;
     private final PasswordEncoder passwordEncoder;
     private final AuthenticationManager authenticationManager;
     private final JwtServiceImpl jwtServiceImpl;
@@ -34,26 +33,22 @@ public class AuthServiceImpl {
     {
         authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(request.getDocumento(), request.getPassword()));
-        User user = userRepository.findByDocumento(request.getDocumento())
+        User user = userRepository.findOneByDocumento(request.getDocumento())
                 .orElseThrow(() -> new UsernameNotFoundException(request.getDocumento()));
 
         String token = jwtServiceImpl.getToken(user);
-        String tokenHash = jwtServiceImpl.hashToken(token);
         Boolean isFirstLogin;
         if(user.getTokenHash()== null){
             isFirstLogin = true;
         }else {
             isFirstLogin = false;
         }
-        user.setTokenHash(tokenHash);
-        userRepository.save(user);  // Actualiza el usuario con el hash del token
-
         return AuthResponse.builder()
                 .token(token)
                 .isFirstLogin(isFirstLogin)
                 .build();
     }
-    public String  register(RegisterRequest request)
+    public RegisterResponse register(RegisterRequest request)
     {
         StringBuilder sb = new StringBuilder(LENGTH);
         for (int i = 0; i < LENGTH; i++) {
@@ -62,23 +57,34 @@ public class AuthServiceImpl {
         }
         TypeDocument typeDocument = typeDocumentRepository.findById(request.getIdTipoDocumento())
                 .orElseThrow(() -> new RuntimeException("Tipo de documento no encontrado"));
-        Role role;
-        if(request.getIsProfesor()){
-             role = Role.PROFESOR;
-        }else {
-             role = Role.ADMINISTRADOR;
-        }
+
+        Role role=roleRepository.findOneById(request.getIdRol());
         User user = User.builder()
                 .documento(request.getDocumento())
-                .password(passwordEncoder.encode(request.getPassword()))
+                .password(passwordEncoder.encode(sb.toString()))
                 .email(request.getEmail())
                 .typeDocument(typeDocument)
                 .firstname(request.getFirstName())
                 .lastname(request.getLastName())
-                .role(Role.DIRECTOR)
+                .role(role)
                 .active(true)
                 .build();
         userRepository.save(user);
-        return sb.toString();
+        return RegisterResponse.builder()
+                .password(sb.toString())
+                .build();
+    }
+
+    public ChangePasswordResponse changePassword(ChangePasswordDTO request){
+        User user = userRepository.findOneByDocumento(request.getDocumento())
+                .orElseThrow(() -> new UsernameNotFoundException(request.getDocumento()));
+        String token = jwtServiceImpl.getToken(user);
+        String tokenHash = jwtServiceImpl.hashToken(token);
+        user.setTokenHash(tokenHash);
+        user.setPassword(passwordEncoder.encode(request.getPassword()));
+        userRepository.save(user);
+        return ChangePasswordResponse.builder()
+                .token(token)
+                .build();
     }
 }

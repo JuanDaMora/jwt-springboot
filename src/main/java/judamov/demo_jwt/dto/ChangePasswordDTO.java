@@ -9,8 +9,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class LoginRequest {
+public class ChangePasswordDTO {
     String documento;
     String password;
-    String repeatPassword;
 }

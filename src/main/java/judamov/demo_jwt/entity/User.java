@@ -1,7 +1,6 @@
 package judamov.demo_jwt.entity;
 
 import jakarta.persistence.*;
-import judamov.demo_jwt.enums.Role;
 import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -19,7 +18,7 @@ import java.util.List;
 @Table(name="user", uniqueConstraints = {@UniqueConstraint(columnNames= {"documento"})})
 public class User implements UserDetails {
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     Integer Id;
     @Column(unique=true)
     String email;
@@ -36,13 +35,15 @@ public class User implements UserDetails {
     String lastname;
     @Column(nullable = false)
     Boolean active;
-    Role role;
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "role_id", nullable = false)
+    private Role role;
+
     private String tokenHash;
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return List.of(new SimpleGrantedAuthority((role.name())));
+        return List.of(new SimpleGrantedAuthority(role.getName()));
     }
-
     @Override
     public String getUsername() {
         return documento;

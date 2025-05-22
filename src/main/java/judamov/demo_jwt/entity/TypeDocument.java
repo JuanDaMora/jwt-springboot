@@ -10,7 +10,7 @@ import lombok.Data;
 @Transactional
 public class TypeDocument {
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     Integer id;
 
     @Column(unique = true, nullable = false)
