@@ -1,11 +1,11 @@
-package judamov.demo_jwt.services;
+package judamov.demo_jwt.service.impl;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
-import judamov.demo_jwt.User.User;
-import judamov.demo_jwt.User.UserRepository;
+import judamov.demo_jwt.entity.User;
+import judamov.demo_jwt.repository.IUserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -24,37 +24,41 @@ import io.jsonwebtoken.Jwts;
 
 @Service
 @RequiredArgsConstructor
-public class JwtService {
-    private static final String SECRET_KEY="OASLK4N520LASNDASDPO342PASNVSDAAAS1123OASKFNVSA";
+public class JwtServiceImpl {
 
-    private final UserRepository userRepository;
-    public String getToken(UserDetails user)
-    {
-        return getToken(new HashMap<>(),user);
+    private static final String SECRET_KEY = "OASLK4N520LASNDASDPO342PASNVSDAAAS1123OASKFNVSA";
+    private final IUserRepository IUserRepository;
+
+    public String getToken(UserDetails userDetails) {
+        User user = (User) userDetails;
+
+        Map<String, Object> extraClaims = new HashMap<>();
+        extraClaims.put("documento", user.getDocumento());
+        extraClaims.put("role", user.getRole().getName());
+
+        return getToken(extraClaims, userDetails);
     }
-    private String getToken(Map<String, Object> extraClaims, UserDetails user)
-    {
+
+    private String getToken(Map<String, Object> extraClaims, UserDetails user) {
         return Jwts
                 .builder()
                 .setClaims(extraClaims)
-                .setSubject(user.getUsername())
                 .setIssuedAt(new Date(System.currentTimeMillis()))
-                .setExpiration(new Date(System.currentTimeMillis()+1000*60*24))
+                .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60 * 24)) // 24 horas
                 .signWith(getKey(), SignatureAlgorithm.HS256)
                 .compact();
     }
 
-    private Key getKey(){
+    private Key getKey() {
         byte[] encodedKey = Decoders.BASE64.decode(SECRET_KEY);
         return Keys.hmacShaKeyFor(encodedKey);
     }
-    public String getUsernameFromToken(String token)
-    {
-        return  getClaim(token, Claims::getSubject);
+
+    public String getUsernameFromToken(String token) {
+        return getAllClaims(token).get("documento", String.class);
     }
 
-    private Claims getAllClaims(String token)
-    {
+    private Claims getAllClaims(String token) {
         return Jwts
                 .parserBuilder()
                 .setSigningKey(getKey())
@@ -62,20 +66,37 @@ public class JwtService {
                 .parseClaimsJws(token)
                 .getBody();
     }
-    public <T> T getClaim(String token, Function<Claims,T> claimsResolver)
-    {
-        final Claims claims= getAllClaims(token);
-        return claimsResolver.apply(claims);
 
+    public <T> T getClaim(String token, Function<Claims, T> claimsResolver) {
+        final Claims claims = getAllClaims(token);
+        return claimsResolver.apply(claims);
     }
-    private Date getExpiration(String token)
-    {
+
+    private Date getExpiration(String token) {
         return getClaim(token, Claims::getExpiration);
     }
-    private boolean isTokenExpired(String token)
-    {
+
+    private boolean isTokenExpired(String token) {
         return getExpiration(token).before(new Date());
     }
+
+    public boolean isTokenValid(String token, UserDetails user) {
+        final String username = getUsernameFromToken(token);
+        if (!username.equals(user.getUsername()) || isTokenExpired(token)) {
+            return false;
+        }
+
+        User dbUser = IUserRepository.findOneByDocumento(user.getUsername())
+                .orElseThrow(() -> new UsernameNotFoundException(user.getUsername()));
+        String tokenHash = hashToken(token);
+
+        if (dbUser.getTokenHash() != null) {
+            return tokenHash.equals(dbUser.getTokenHash());
+        } else {
+            return true;
+        }
+    }
+
     public String hashToken(String token) {
         try {
             MessageDigest digest = MessageDigest.getInstance("SHA-256");
@@ -97,17 +118,8 @@ public class JwtService {
         }
         return hexString.toString();
     }
-    public boolean isTokenValid(String token, UserDetails user) {
-        final String username = getUsernameFromToken(token);
-        if (!username.equals(user.getUsername()) || isTokenExpired(token)) {
-            return false;
-        }
 
-        User dbUser = userRepository.findByUsername(user.getUsername())
-                .orElseThrow(() -> new UsernameNotFoundException(user.getUsername()));
-        String tokenHash = hashToken(token);
-
-        return tokenHash.equals(dbUser.getTokenHash());
+    public String getRoleFromToken(String token) {
+        return getAllClaims(token).get("role", String.class);
     }
-
 }

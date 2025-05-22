@@ -4,8 +4,8 @@ import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import judamov.demo_jwt.User.UserRepository;
-import judamov.demo_jwt.services.JwtService;
+import judamov.demo_jwt.repository.IUserRepository;
+import judamov.demo_jwt.service.impl.JwtServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -21,8 +21,8 @@ import java.io.IOException;
 @RequiredArgsConstructor
 @Component
 public class JwtAuthenticationFilter  extends OncePerRequestFilter {
-    private final JwtService jwtService;
-    private final UserRepository userRepository;
+    private final JwtServiceImpl jwtServiceImpl;
+    private final IUserRepository IUserRepository;
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException
@@ -35,13 +35,14 @@ public class JwtAuthenticationFilter  extends OncePerRequestFilter {
             filterChain.doFilter(request,response);
             return;
         }
-        username = jwtService.getUsernameFromToken(token);
+        username = jwtServiceImpl.getUsernameFromToken(token);
         if(username != null && SecurityContextHolder.getContext().getAuthentication() ==null){
-            UserDetails user= userRepository.findByUsername(username).orElseThrow(() -> new UsernameNotFoundException("Username not found"));
-            if(jwtService.isTokenValid(token,user))
+            UserDetails user = IUserRepository.findOneByDocumento(username)
+                    .orElseThrow(() -> new UsernameNotFoundException("Username not found"));
+            if(jwtServiceImpl.isTokenValid(token,user))
             {
                 UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
-                        username,
+                        user,
                         null,
                         user.getAuthorities()
                 );

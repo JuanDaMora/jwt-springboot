@@ -1,4 +1,4 @@
-package judamov.demo_jwt.Auth;
+package judamov.demo_jwt.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -9,10 +9,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class RegisterRequest {
-    String username;
+public class ChangePasswordDTO {
+    String documento;
     String password;
-    String firstname;
-    String lastname;
-    String country;
 }
