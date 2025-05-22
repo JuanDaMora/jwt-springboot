@@ -10,9 +10,10 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class RegisterRequest {
-    Long idTipoDocumento;
+    Integer idTipoDocumento;
     String email;
     String documento;
+    String password;
     String firstName;
     String lastName;
     Boolean isProfesor;

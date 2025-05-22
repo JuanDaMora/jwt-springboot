@@ -7,6 +7,7 @@ import judamov.demo_jwt.entity.User;
 import judamov.demo_jwt.repository.IRoleRepository;
 import judamov.demo_jwt.repository.ITypeDocumentRepository;
 import judamov.demo_jwt.repository.IUserRepository;
+import judamov.demo_jwt.exceptions.AuthExceptions.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -31,37 +32,39 @@ public class AuthServiceImpl {
 
     public AuthResponse login(LoginRequest request)
     {
+        User user = userRepository.findOneByDocumento(request.getDocumento())
+                .orElseThrow(() -> new UserNotFoundException(request.getDocumento()));
         authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(request.getDocumento(), request.getPassword()));
-        User user = userRepository.findOneByDocumento(request.getDocumento())
-                .orElseThrow(() -> new UsernameNotFoundException(request.getDocumento()));
+
 
         String token = jwtServiceImpl.getToken(user);
-        Boolean isFirstLogin;
-        if(user.getTokenHash()== null){
-            isFirstLogin = true;
-        }else {
-            isFirstLogin = false;
-        }
+        Boolean isFirstLogin = user.getTokenHash() == null;
+
         return AuthResponse.builder()
                 .token(token)
                 .isFirstLogin(isFirstLogin)
                 .build();
     }
-    public RegisterResponse register(RegisterRequest request)
-    {
-        StringBuilder sb = new StringBuilder(LENGTH);
-        for (int i = 0; i < LENGTH; i++) {
-            int index = random.nextInt(CHARACTERS.length());
-            sb.append(CHARACTERS.charAt(index));
-        }
-        TypeDocument typeDocument = typeDocumentRepository.findById(request.getIdTipoDocumento())
-                .orElseThrow(() -> new RuntimeException("Tipo de documento no encontrado"));
+    public RegisterResponse register(RegisterRequest request) {
+        TypeDocument typeDocument = typeDocumentRepository.findOneById(request.getIdTipoDocumento())
+                .orElseThrow(() -> new TipoDocumentNotFoundException(request.getIdTipoDocumento()));
 
-        Role role=roleRepository.findOneById(request.getIdRol());
+        Role role = roleRepository.findOneById(request.getIdRol())
+                .orElseThrow(() -> new RolNotFoundException(request.getIdRol()));
+
+        // Validaciones previas
+        if (userRepository.findOneByDocumento(request.getDocumento()).isPresent()) {
+            throw new UserRegistrationException("Ya existe un usuario con el documento: " + request.getDocumento());
+        }
+
+        if (userRepository.findOneByEmail(request.getEmail()).isPresent()) {
+            throw new UserRegistrationException("Ya existe un usuario con el correo: " + request.getEmail());
+        }
+
         User user = User.builder()
                 .documento(request.getDocumento())
-                .password(passwordEncoder.encode(sb.toString()))
+                .password(passwordEncoder.encode(request.getPassword()))
                 .email(request.getEmail())
                 .typeDocument(typeDocument)
                 .firstname(request.getFirstName())
@@ -69,11 +72,18 @@ public class AuthServiceImpl {
                 .role(role)
                 .active(true)
                 .build();
-        userRepository.save(user);
+
+        try {
+            userRepository.save(user);
+        } catch (Exception e) {
+            throw new UserRegistrationException("Error inesperado al guardar el usuario");
+        }
+
         return RegisterResponse.builder()
-                .password(sb.toString())
+                .password(request.getPassword())
                 .build();
     }
+
 
     public ChangePasswordResponse changePassword(ChangePasswordDTO request){
         User user = userRepository.findOneByDocumento(request.getDocumento())

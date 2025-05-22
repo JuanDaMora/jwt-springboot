@@ -5,7 +5,9 @@ import judamov.demo_jwt.entity.TypeDocument;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
+import java.util.Optional;
+
 @Repository
 public interface IRoleRepository extends JpaRepository<Role, Long> {
-    Role findOneById(Integer id);
+    Optional<Role> findOneById(Integer id);
 }
