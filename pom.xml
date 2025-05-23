@@ -9,10 +9,10 @@
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>judamov</groupId>
-	<artifactId>demo-jwt</artifactId>
+	<artifactId>SIPOH</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>demo-jwt</name>
-	<description>Demo project for Spring Boot</description>
+	<name>SIPOH</name>
+	<description>Sistema de gestion de horarios</description>
 	<url/>
 	<licenses>
 		<license/>
@@ -91,11 +91,6 @@
 			<artifactId>jjwt-jackson</artifactId>
 			<version>0.11.5</version>
 			<scope>runtime</scope>
-		</dependency>
-		<dependency>
-			<groupId>secure-rand</groupId>
-			<artifactId>secure-rand</artifactId>
-			<version>0.1</version>
 		</dependency>
 	</dependencies>
 
