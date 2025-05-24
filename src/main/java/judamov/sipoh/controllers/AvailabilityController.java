@@ -1,6 +1,5 @@
 package judamov.sipoh.controllers;
 
-import judamov.sipoh.dto.ResponseDTO;
 import judamov.sipoh.dto.AvailabilityDTO;
 import judamov.sipoh.service.impl.AvailabilityServiceImpl;
 import lombok.RequiredArgsConstructor;

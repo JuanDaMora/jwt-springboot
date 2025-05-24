@@ -1,5 +1,6 @@
 package judamov.sipoh.service.impl;
 
+import jakarta.transaction.Transactional;
 import judamov.sipoh.dto.AvailabilityDTO;
 import judamov.sipoh.entity.Availability;
 import judamov.sipoh.entity.Semester;
@@ -71,12 +72,15 @@ public class AvailabilityServiceImpl {
         }
         return true;
     }
+    @Transactional
     public Boolean createAvailability(Integer userId, Integer semesterId, AvailabilityDTO dto) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new GenericAppException(HttpStatus.NOT_FOUND, "Usuario no encontrado"));
 
         Semester semester = semesterRepository.findById(semesterId)
                 .orElseThrow(() -> new GenericAppException(HttpStatus.NOT_FOUND,"Semestre no encontrado"));
+
+        availabilityRepository.deleteByUserAndSemester(user, semester);
 
         for (Map.Entry<DayOfWeekEnum, List<Integer>> entry : dto.getDisponibilidad().entrySet()) {
             DayOfWeekEnum day = entry.getKey();
