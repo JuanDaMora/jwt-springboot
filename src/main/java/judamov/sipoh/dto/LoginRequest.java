@@ -12,5 +12,4 @@ import lombok.NoArgsConstructor;
 public class LoginRequest {
     String documento;
     String password;
-    String repeatPassword;
 }

@@ -26,7 +26,6 @@ import java.io.IOException;
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
     private final JwtServiceImpl jwtServiceImpl;
     private final IUserRepository IUserRepository;
-
     @Override
     protected void doFilterInternal(HttpServletRequest request,
                                     HttpServletResponse response,
@@ -34,44 +33,40 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
         final String token = getTokenFromRequest(request);
         final String username;
-
-        if (token == null) {
-            System.out.println("🔸 No token en la cabecera Authorization.");
-            filterChain.doFilter(request, response);
-            return;
-        }
-
-        username = jwtServiceImpl.getUsernameFromToken(token);
-        System.out.println("🔸 Username extraído del token: " + username);
-
-        if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
-            UserDetails user = IUserRepository.findOneByDocumento(username)
-                    .orElseThrow(() -> new UsernameNotFoundException("Username not found"));
-
-            System.out.println("🔸 Usuario encontrado: " + user.getUsername());
-
-            if (!jwtServiceImpl.isTokenValid(token, user)) {
-                System.out.println("⛔ Token inválido o expirado.");
-                throw new GenericAppException(HttpStatus.UNAUTHORIZED, "Token inválido");
+        String path = request.getRequestURI();
+        if(path.startsWith("/api")){
+            if (token == null)  {
+                System.out.println("🔸 No token en la cabecera Authorization.");
+                filterChain.doFilter(request, response);
+                return;
             }
 
-            UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
-                    user,
-                    null,
-                    user.getAuthorities()
-            );
-            authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-            SecurityContextHolder.getContext().setAuthentication(authToken);
+            username = jwtServiceImpl.getUsernameFromToken(token);
+            System.out.println("🔸 Username extraído del token: " + username);
 
-            System.out.println("✅ Usuario autenticado y contexto de seguridad establecido.");
-        } else {
-            if (SecurityContextHolder.getContext().getAuthentication() != null) {
-                System.out.println("⚠️ Ya hay una autenticación en el contexto.");
+            if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
+                UserDetails user = IUserRepository.findOneByDocumento(username)
+                        .orElseThrow(() -> new UsernameNotFoundException("Username not found"));
+
+                System.out.println("🔸 Usuario encontrado: " + user.getUsername());
+
+                if (!jwtServiceImpl.isTokenValid(token, user)) {
+                    System.out.println("⛔ Token inválido o expirado.");
+                    throw new GenericAppException(HttpStatus.UNAUTHORIZED, "Token inválido");
+                }
+
+                UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
+                        user, null, user.getAuthorities());
+                authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+                SecurityContextHolder.getContext().setAuthentication(authToken);
+
+                System.out.println("✅ Usuario autenticado y contexto de seguridad establecido.");
             }
         }
 
         filterChain.doFilter(request, response);
     }
+
 
     private String getTokenFromRequest(HttpServletRequest request) {
         final String authHeader = request.getHeader(HttpHeaders.AUTHORIZATION);

@@ -20,4 +20,6 @@ public class TypeDocumentController {
     public ResponseEntity<TypeDocument> createTypeDocument(@RequestBody TypeDocumentDTO request) {
         return ResponseEntity.ok(typeDocumentService.createTypeDocument(request));
     }
+
+
 }

@@ -21,7 +21,6 @@ public class UserValidationFilter extends OncePerRequestFilter {
     public UserValidationFilter(JwtServiceImpl jwtService) {
         this.jwtService = jwtService;
     }
-
     @Override
     protected void doFilterInternal(HttpServletRequest request,
                                     HttpServletResponse response,
@@ -30,18 +29,21 @@ public class UserValidationFilter extends OncePerRequestFilter {
         try {
             String path = request.getRequestURI();
 
-            if (!path.startsWith("/public")) {
-                String token = extractToken(request);
-                String headerUserId = request.getHeader("userId");
+            // Solo se valida si la ruta es parte de la API
+            if (path.startsWith("/api")) {
+                String token = extractTokenIfPresent(request);
 
-                if (headerUserId == null) {
-                    throw new GenericAppException(HttpStatus.BAD_REQUEST, "Header 'userId' es obligatorio");
-                }
+                if (token != null) {
+                    String headerUserId = request.getHeader("userId");
+                    if (headerUserId == null) {
+                        throw new GenericAppException(HttpStatus.BAD_REQUEST, "Header 'userId' es obligatorio");
+                    }
 
-                String tokenUserId = jwtService.getUserIdFromToken(token).toString();
+                    String tokenUserId = jwtService.getUserIdFromToken(token).toString();
 
-                if (!headerUserId.equals(tokenUserId)) {
-                    throw new GenericAppException(HttpStatus.UNAUTHORIZED, "El userId del header no coincide con el token");
+                    if (!headerUserId.equals(tokenUserId)) {
+                        throw new GenericAppException(HttpStatus.UNAUTHORIZED, "El userId del header no coincide con el token");
+                    }
                 }
             }
 
@@ -51,13 +53,13 @@ public class UserValidationFilter extends OncePerRequestFilter {
             response.setStatus(ex.getStatus().value());
             response.setContentType("application/json");
             response.getWriter().write("""
-                {
-                  "timestamp": "%s",
-                  "status": %d,
-                  "error": "%s",
-                  "message": "%s"
-                }
-            """.formatted(
+            {
+              "timestamp": "%s",
+              "status": %d,
+              "error": "%s",
+              "message": "%s"
+            }
+        """.formatted(
                     java.time.Instant.now(),
                     ex.getStatus().value(),
                     ex.getStatus().getReasonPhrase(),
@@ -66,11 +68,12 @@ public class UserValidationFilter extends OncePerRequestFilter {
         }
     }
 
-    private String extractToken(HttpServletRequest request) {
+    private String extractTokenIfPresent(HttpServletRequest request) {
         String authHeader = request.getHeader(HttpHeaders.AUTHORIZATION);
         if (authHeader != null && authHeader.startsWith("Bearer ")) {
             return authHeader.substring(7);
         }
-        throw new GenericAppException(HttpStatus.UNAUTHORIZED, "Token no encontrado");
+        return null;
     }
+
 }
