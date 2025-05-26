@@ -6,11 +6,16 @@ import judamov.sipoh.repository.ITypeDocumentRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
 public class TypeDocumentServiceImpl {
     private final ITypeDocumentRepository typeDocumentRepository;
 
+    public List<TypeDocument> getAllTypeDocuments(){
+        return typeDocumentRepository.findAll();
+    }
     public TypeDocument createTypeDocument(TypeDocumentDTO typeDocumentDTO) {
         TypeDocument newTypeDocument= new TypeDocument();
         newTypeDocument.setDescription(typeDocumentDTO.getDescription());

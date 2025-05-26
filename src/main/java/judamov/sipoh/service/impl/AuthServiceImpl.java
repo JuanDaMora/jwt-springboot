@@ -5,6 +5,7 @@ import judamov.sipoh.entity.Role;
 import judamov.sipoh.entity.TypeDocument;
 import judamov.sipoh.entity.User;
 import judamov.sipoh.exceptions.GenericAppException;
+import judamov.sipoh.mappers.UserMapper;
 import judamov.sipoh.repository.IRoleRepository;
 import judamov.sipoh.repository.ITypeDocumentRepository;
 import judamov.sipoh.repository.IUserRepository;
@@ -14,6 +15,9 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -25,6 +29,14 @@ public class AuthServiceImpl {
     private final PasswordEncoder passwordEncoder;
     private final AuthenticationManager authenticationManager;
     private final JwtServiceImpl jwtServiceImpl;
+
+
+    public List<UserDTO> getAllUsers() {
+        return userRepository.findAll()
+                .stream()
+                .map(UserMapper::userToUserDTO) // usar el mapper aquí
+                .collect(Collectors.toList());
+    }
 
     public AuthResponse login(LoginRequest request) {
         User user = userRepository.findOneByDocumento(request.getDocumento())
@@ -51,7 +63,7 @@ public class AuthServiceImpl {
 
         return AuthResponse.builder()
                 .token(token)
-                .isFirstLogin(forcePasswordReset)
+                .forcePasswordReset(forcePasswordReset)
                 .build();
     }
 
@@ -80,8 +92,8 @@ public class AuthServiceImpl {
                 .password(passwordEncoder.encode(request.getPassword()))
                 .email(request.getEmail())
                 .typeDocument(typeDocument)
-                .firstname(request.getFirstName())
-                .lastname(request.getLastName())
+                .firstName(request.getFirstName())
+                .lastName(request.getLastName())
                 .role(role)
                 .active(true)
                 .build();

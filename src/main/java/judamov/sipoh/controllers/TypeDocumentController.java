@@ -5,9 +5,9 @@ import judamov.sipoh.entity.TypeDocument;
 import judamov.sipoh.service.impl.TypeDocumentServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/v1/tipoDocumento")
@@ -16,10 +16,13 @@ public class TypeDocumentController {
 
     private final TypeDocumentServiceImpl typeDocumentService;
 
-    @RequestMapping("/create")
+    @GetMapping
+    public ResponseEntity<List<TypeDocument>> getAllTypeDocuments (){
+        return ResponseEntity.ok(typeDocumentService.getAllTypeDocuments());
+    }
+    @PostMapping
     public ResponseEntity<TypeDocument> createTypeDocument(@RequestBody TypeDocumentDTO request) {
         return ResponseEntity.ok(typeDocumentService.createTypeDocument(request));
     }
-
 
 }

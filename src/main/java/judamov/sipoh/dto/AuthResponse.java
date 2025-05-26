@@ -11,5 +11,5 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class AuthResponse {
     private String token;
-    private Boolean isFirstLogin;
+    private Boolean forcePasswordReset;
 }

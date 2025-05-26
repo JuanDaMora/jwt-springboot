@@ -1,10 +1,13 @@
 package judamov.sipoh.controllers;
 import judamov.sipoh.dto.ChangePasswordDTO;
 import judamov.sipoh.dto.ChangePasswordResponse;
+import judamov.sipoh.dto.UserDTO;
 import judamov.sipoh.service.impl.AuthServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/v1")
@@ -12,8 +15,12 @@ import org.springframework.web.bind.annotation.*;
 public class AuthPrivateController {
 
     private final AuthServiceImpl authService;
+    @GetMapping("/users")
+    public ResponseEntity<List<UserDTO>> getAllUsers(){
+        return ResponseEntity.ok(authService.getAllUsers());
+    }
 
-    @PostMapping("changePassword")
+    @PostMapping("/changePassword")
     public ResponseEntity<ChangePasswordResponse> changePassword(
         @RequestBody ChangePasswordDTO resetpassword) {
         return ResponseEntity.ok(authService.changePassword(resetpassword));

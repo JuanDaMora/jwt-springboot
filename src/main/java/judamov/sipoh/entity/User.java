@@ -14,6 +14,8 @@ import java.util.Collection;
 import java.util.List;
 
 @Data
+@Getter
+@Setter
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
@@ -23,7 +25,8 @@ import java.util.List;
 public class User implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    Integer Id;
+    private Integer id;
+
     @Column(unique=true)
     String email;
     @ManyToOne(fetch = FetchType.LAZY)
@@ -33,10 +36,10 @@ public class User implements UserDetails {
     String documento;
     @Column(nullable = false)
     String password;
-    @Column(nullable = false)
-    String firstname;
-    @Column(nullable = false)
-    String lastname;
+    @Column(name = "first_name", nullable = false)
+    String firstName;
+    @Column(name= "last_name", nullable = false)
+    String lastName;
     @Column(nullable = false)
     Boolean active;
     @ManyToOne(fetch = FetchType.EAGER)
@@ -54,6 +57,7 @@ public class User implements UserDetails {
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return List.of(new SimpleGrantedAuthority(role.getName()));
     }
+
     @Override
     public String getUsername() {
         return documento;
