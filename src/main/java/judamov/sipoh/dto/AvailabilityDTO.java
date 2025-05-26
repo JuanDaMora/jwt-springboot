@@ -14,5 +14,6 @@ import java.util.Map;
 @NoArgsConstructor
 @AllArgsConstructor
 public class AvailabilityDTO {
-    private Map<DayOfWeekEnum, List<Integer>> disponibilidad;
+    private Map<DayOfWeekEnum, List<AvailabilityBlockDTO>> disponibilidad;
 }
+

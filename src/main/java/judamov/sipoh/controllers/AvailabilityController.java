@@ -29,12 +29,4 @@ public class AvailabilityController {
             @RequestBody AvailabilityDTO dto) {
         return ResponseEntity.ok(availabilityService.createAvailability(userId, semesterId, dto));
     }
-    @PutMapping
-    public ResponseEntity<Boolean> updateAvailability(
-            @RequestHeader Integer userId,
-            @RequestHeader Integer semesterId,
-            @RequestBody AvailabilityDTO dto) {
-
-        return ResponseEntity.ok(availabilityService.updateAvailability(userId, semesterId, dto));
-    }
 }
