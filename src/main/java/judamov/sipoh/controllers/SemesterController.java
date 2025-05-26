@@ -1,12 +1,11 @@
 package judamov.sipoh.controllers;
 
+import judamov.sipoh.dto.SemesterDTO;
 import judamov.sipoh.entity.Semester;
 import judamov.sipoh.service.impl.SemesterServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -21,4 +20,13 @@ public class SemesterController {
         return ResponseEntity.ok(semesterService.getAllSemesters());
     }
 
+    @PostMapping
+    public ResponseEntity<Boolean> createSemester(@RequestBody SemesterDTO semesterDTO){
+        return ResponseEntity.ok(semesterService.addSemester(semesterDTO));
+    }
+
+    @PutMapping
+    public ResponseEntity<SemesterDTO> updateSemester(@RequestBody SemesterDTO semesterDTO){
+        return ResponseEntity.ok(semesterService.updateSemester(semesterDTO));
+    }
 }

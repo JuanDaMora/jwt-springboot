@@ -27,8 +27,4 @@ public class TypeDocument {
     @UpdateTimestamp
     @Column(name= "update_date")
     private LocalDateTime updatedAt;
-
-
-
-
 }

@@ -1,6 +1,7 @@
 package judamov.sipoh.entity;
 
 import jakarta.persistence.*;
+import jakarta.transaction.Transactional;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
@@ -8,18 +9,21 @@ import org.hibernate.annotations.UpdateTimestamp;
 import java.time.LocalDateTime;
 
 @Data
+@Getter
+@Setter
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@Transactional
 @Entity
-@Table(name = "roles")
-public class Role {
+@Table(name="status_availability")
+public class StatusAvailability {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @Column(nullable = false, unique = true)
-    private String name;
+    @Column(name="description", nullable = false)
+    private String description;
 
     @Column(name = "creation_date", updatable = false)
     private LocalDateTime createdAt;
