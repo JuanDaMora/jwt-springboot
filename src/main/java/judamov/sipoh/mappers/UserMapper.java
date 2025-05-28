@@ -5,6 +5,8 @@ import judamov.sipoh.entity.Role;
 import judamov.sipoh.entity.TypeDocument;
 import judamov.sipoh.entity.User;
 
+import java.util.stream.Collectors;
+
 public class UserMapper {
 
     public static UserDTO userToUserDTO(User user) {
@@ -18,13 +20,19 @@ public class UserMapper {
                 .firstName(user.getFirstName())
                 .lastName(user.getLastName())
                 .isActive(user.getActive())
-                .id_Role(user.getRole().getId())
+                .idsRoles(user.getUserRoles().stream()
+                        .map(userRol -> userRol.getRole().getId())
+                        .toList())
+                .rolesDescriptions(user.getUserRoles()
+                        .stream()
+                        .map(userRol -> userRol.getRole().getName())
+                        .collect(Collectors.toList()))
                 .createAt(user.getCreatedAt())
                 .updatedAt(user.getUpdatedAt())
                 .build();
     }
 
-    public static User userDTOtoUser(UserDTO dto, TypeDocument typeDocument, Role role) {
+    public static User userDTOtoUser(UserDTO dto, TypeDocument typeDocument) {
         if (dto == null) return null;
 
         return User.builder()
@@ -35,8 +43,6 @@ public class UserMapper {
                 .firstName(dto.getFirstName())
                 .lastName(dto.getLastName())
                 .active(dto.getIsActive())
-                .role(role)
-                // omitir password y tokenHash si no vienen desde el DTO
                 .build();
     }
 }

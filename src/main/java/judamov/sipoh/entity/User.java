@@ -42,9 +42,8 @@ public class User implements UserDetails {
     String lastName;
     @Column(nullable = false)
     Boolean active;
-    @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "role_id", nullable = false)
-    private Role role;
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<UserRol> userRoles;
     @Column(name= "token_hash")
     private String tokenHash;
     @CreationTimestamp
@@ -55,7 +54,9 @@ public class User implements UserDetails {
     private LocalDateTime updatedAt;
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return List.of(new SimpleGrantedAuthority(role.getName()));
+        return userRoles.stream()
+                .map(userRol -> new SimpleGrantedAuthority(userRol.getRole().getName()))
+                .toList();
     }
 
     @Override

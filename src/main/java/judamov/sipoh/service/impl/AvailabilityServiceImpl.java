@@ -18,8 +18,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalTime;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -30,7 +29,6 @@ public class AvailabilityServiceImpl {
     private final IUserRepository userRepository;
     private final ISemesterRepository semesterRepository;
     private final IStatusAvailabilityRepository statusAvailabilityRepository;
-
     public AvailabilityDTO getAvailability(Integer userId, Integer semesterId) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new GenericAppException(HttpStatus.NOT_FOUND, "Usuario no encontrado"));
@@ -52,28 +50,77 @@ public class AvailabilityServiceImpl {
 
         return AvailabilityDTO.builder().disponibilidad(availabilityMap).build();
     }
-
     @Transactional
     public Boolean createAvailability(Integer userId, Integer semesterId, AvailabilityDTO dto) {
-        User user = userRepository.findById(userId)
+        User user = getUserById(userId);
+        Semester semester = getSemesterById(semesterId);
+
+        List<Availability> currentAvailability = getCurrentAvailability(user, semester);
+        Map<String, AvailabilityBlockDTO> incomingMap = buildIncomingAvailabilityMap(dto);
+
+        StatusAvailability defaultStatus = getDefaultStatus();
+
+        deleteObsoleteAvailability(currentAvailability, incomingMap);
+
+        saveNewAvailabilityBlocks(dto, user, semester, incomingMap, defaultStatus);
+
+        return true;
+    }
+
+    private User getUserById(Integer userId) {
+        return userRepository.findById(userId)
                 .orElseThrow(() -> new GenericAppException(HttpStatus.NOT_FOUND, "Usuario no encontrado"));
-        Semester semester = semesterRepository.findById(semesterId)
+    }
+
+    private Semester getSemesterById(Integer semesterId) {
+        return semesterRepository.findById(semesterId)
                 .orElseThrow(() -> new GenericAppException(HttpStatus.NOT_FOUND, "Semestre no encontrado"));
+    }
 
-        availabilityRepository.deleteByUserAndSemester(user, semester);
-
-        StatusAvailability defaultStatus = statusAvailabilityRepository.findById(1)
+    private StatusAvailability getDefaultStatus() {
+        return statusAvailabilityRepository.findById(1)
                 .orElseThrow(() -> new GenericAppException(HttpStatus.NOT_FOUND, "Estado por defecto no encontrado"));
+    }
+
+    private List<Availability> getCurrentAvailability(User user, Semester semester) {
+        return availabilityRepository.findByUserAndSemester(user, semester)
+                .orElse(new ArrayList<>());
+    }
+
+    private Map<String, AvailabilityBlockDTO> buildIncomingAvailabilityMap(AvailabilityDTO dto) {
+        return dto.getDisponibilidad().entrySet().stream()
+                .flatMap(e -> e.getValue().stream()
+                        .map(block -> Map.entry(e.getKey() + "-" + block.getHour(), block)))
+                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+    }
+
+    private void deleteObsoleteAvailability(List<Availability> currentAvailability,
+                                            Map<String, AvailabilityBlockDTO> incomingMap) {
+        for (Availability existing : currentAvailability) {
+            String key = existing.getDayOfWeek() + "-" + existing.getStartTime().getHour();
+            boolean existsInNew = incomingMap.containsKey(key);
+
+            if (!existsInNew &&
+                    !existing.getStatusAvailability().getDescription().equalsIgnoreCase("APROBADO")
+                    && !existing.getStatusAvailability().getDescription().equalsIgnoreCase("RECHAZADO")) {
+                availabilityRepository.delete(existing);
+            }
+        }
+    }
+
+    private void saveNewAvailabilityBlocks(AvailabilityDTO dto, User user, Semester semester,
+                                           Map<String, AvailabilityBlockDTO> incomingMap,
+                                           StatusAvailability defaultStatus) {
 
         for (Map.Entry<DayOfWeekEnum, List<AvailabilityBlockDTO>> entry : dto.getDisponibilidad().entrySet()) {
             DayOfWeekEnum day = entry.getKey();
 
             for (AvailabilityBlockDTO block : entry.getValue()) {
                 LocalTime time = LocalTime.of(block.getHour(), 0);
-                boolean exists = availabilityRepository.existsByUserAndSemesterAndDayOfWeekAndStartTime(user, semester, day, time);
+                String key = day + "-" + block.getHour();
 
-                if (exists) {
-                    throw new GenericAppException(HttpStatus.CONFLICT, "Ya existe disponibilidad en " + day + " a las " + time);
+                if (availabilityRepository.existsByUserAndSemesterAndDayOfWeekAndStartTime(user, semester, day, time)) {
+                    continue;
                 }
 
                 Availability availability = new Availability();
@@ -81,19 +128,15 @@ public class AvailabilityServiceImpl {
                 availability.setSemester(semester);
                 availability.setDayOfWeek(day);
                 availability.setStartTime(time);
-                StatusAvailability status;
-                if (block.getStatusId() != null) {
-                    status = statusAvailabilityRepository.findById(block.getStatusId())
-                            .orElseThrow(() -> new GenericAppException(HttpStatus.NOT_FOUND, "Estado no encontrado: " + block.getStatusId()));
-                } else {
-                    status = defaultStatus;
-                }
+
+                StatusAvailability status = (block.getStatusId() != null)
+                        ? statusAvailabilityRepository.findById(block.getStatusId())
+                        .orElseThrow(() -> new GenericAppException(HttpStatus.NOT_FOUND, "Estado no encontrado: " + block.getStatusId()))
+                        : defaultStatus;
+
                 availability.setStatusAvailability(status);
                 availabilityRepository.save(availability);
             }
         }
-
-        return true;
     }
-
 }

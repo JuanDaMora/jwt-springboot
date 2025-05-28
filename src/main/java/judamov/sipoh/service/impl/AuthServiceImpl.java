@@ -4,6 +4,7 @@ import judamov.sipoh.dto.*;
 import judamov.sipoh.entity.Role;
 import judamov.sipoh.entity.TypeDocument;
 import judamov.sipoh.entity.User;
+import judamov.sipoh.entity.UserRol;
 import judamov.sipoh.exceptions.GenericAppException;
 import judamov.sipoh.mappers.UserMapper;
 import judamov.sipoh.repository.IRoleRepository;
@@ -72,11 +73,6 @@ public class AuthServiceImpl {
                 .orElseThrow(() -> new GenericAppException(HttpStatus.BAD_REQUEST,
                         "Tipo de documento no encontrado con id: " + request.getIdTipoDocumento()));
 
-        Role role = roleRepository.findOneById(request.getIdRol())
-                .orElseThrow(() -> new GenericAppException(HttpStatus.BAD_REQUEST,
-                        "Rol no encontrado con id: " + request.getIdRol()));
-
-        // Validaciones previas
         userRepository.findOneByDocumento(request.getDocumento()).ifPresent(u -> {
             throw new GenericAppException(HttpStatus.BAD_REQUEST,
                     "Ya existe un usuario con el documento: " + request.getDocumento());
@@ -94,9 +90,17 @@ public class AuthServiceImpl {
                 .typeDocument(typeDocument)
                 .firstName(request.getFirstName())
                 .lastName(request.getLastName())
-                .role(role)
                 .active(true)
                 .build();
+
+        List<UserRol> userRoles = request.getIdsRoles().stream().map(roleId -> {
+            Role role = roleRepository.findOneById(roleId)
+                    .orElseThrow(() -> new GenericAppException(HttpStatus.BAD_REQUEST,
+                            "Rol no encontrado con id: " + roleId));
+            return new UserRol(null, user, role, null, null);
+        }).collect(Collectors.toList());
+
+        user.setUserRoles(userRoles);
 
         try {
             userRepository.save(user);

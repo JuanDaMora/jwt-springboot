@@ -15,10 +15,14 @@ import java.time.LocalDateTime;
 public class TypeDocument {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    Integer id;
+    private Integer id;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "sigla_id")
+    private Sigla sigla;
 
     @Column(unique = true, nullable = false)
-    String description;
+    private  String description;
 
     @CreationTimestamp
     @Column(name = "creation_date", updatable = false)

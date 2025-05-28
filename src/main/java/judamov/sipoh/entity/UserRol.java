@@ -1,28 +1,32 @@
 package judamov.sipoh.entity;
 
 import jakarta.persistence.*;
-import lombok.*;
+import jakarta.transaction.Transactional;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.LocalDateTime;
-import java.util.List;
 
+@Entity
 @Data
-@Builder
+@Table(name = "user_rol")
+@Transactional
 @NoArgsConstructor
 @AllArgsConstructor
-@Entity
-@Table(name = "roles")
-public class Role {
+public class UserRol  {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
-
-    @Column(nullable = false, unique = true)
-    private String name;
-    @OneToMany(mappedBy = "role", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<UserRol> userRoles;
+    @ManyToOne
+    @JoinColumn(name="user_id")
+    private User user;
+    @ManyToOne
+    @JoinColumn(name="role_id")
+    private Role role;
+    @CreationTimestamp
     @Column(name = "creation_date", updatable = false)
     private LocalDateTime createdAt;
     @UpdateTimestamp

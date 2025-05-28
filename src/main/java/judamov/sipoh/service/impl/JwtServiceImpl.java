@@ -19,6 +19,7 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
 
@@ -36,8 +37,13 @@ public class JwtServiceImpl {
 
         Map<String, Object> extraClaims = new HashMap<>();
         extraClaims.put("documento", user.getDocumento());
-        extraClaims.put("role", user.getRole().getName());
         extraClaims.put("userId", user.getId());
+        extraClaims.put(
+                "roles",
+                user.getUserRoles().stream()
+                        .map(userRol -> userRol.getRole().getName())
+                        .toList()
+        );
 
         return getToken(extraClaims, userDetails);
     }
@@ -129,7 +135,9 @@ public class JwtServiceImpl {
         return hexString.toString();
     }
 
-    public String getRoleFromToken(String token) {
-        return getAllClaims(token).get("role", String.class);
+    public List<String> getRolesFromToken(String token) {
+        return getAllClaims(token).get("roles", List.class);
     }
+
+
 }

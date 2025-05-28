@@ -6,21 +6,24 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
 public class UserDTO {
-    Integer id;
-    String email;
-    Integer id_type_document;
-    String documento;
-    String firstName;
-    String lastName;
-    Boolean isActive;
-    Integer id_Role;
-    // auqi pon el role desciption
-    LocalDateTime createAt;
-    LocalDateTime updatedAt;
+    private Integer id;
+    private String email;
+    private Integer id_type_document;
+    private String documento;
+    private String firstName;
+    private String lastName;
+    private Boolean isActive;
+
+    private List<Integer> idsRoles;
+    private List<String> rolesDescriptions;
+
+    private LocalDateTime createAt;
+    private LocalDateTime updatedAt;
 }

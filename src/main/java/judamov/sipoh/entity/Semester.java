@@ -23,19 +23,19 @@ import java.util.Date;
 public class Semester {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    Integer id;
+    private Integer id;
 
     @Column(unique = true, nullable = false)
-    String description;
+    private String description;
     @Column(unique = true, nullable = false)
-    LocalDate startDate;
+    private LocalDate startDate;
     @Column(nullable = false)
-    LocalDate endDate;
+    private LocalDate endDate;
 
-    @Column(name = "creation_date", updatable = false)
+    @Column(name = "created_at", updatable = false)
     private LocalDateTime createdAt;
     @UpdateTimestamp
-    @Column(name= "update_date")
+    @Column(name= "updated_at")
     private LocalDateTime updatedAt;
 
     public Semester(SemesterDTO semesterDTO) {
