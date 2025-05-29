@@ -3,16 +3,10 @@ package judamov.sipoh.service.impl;
 import jakarta.transaction.Transactional;
 import judamov.sipoh.dto.AvailabilityBlockDTO;
 import judamov.sipoh.dto.AvailabilityDTO;
-import judamov.sipoh.entity.Availability;
-import judamov.sipoh.entity.Semester;
-import judamov.sipoh.entity.StatusAvailability;
-import judamov.sipoh.entity.User;
+import judamov.sipoh.entity.*;
 import judamov.sipoh.enums.DayOfWeekEnum;
 import judamov.sipoh.exceptions.GenericAppException;
-import judamov.sipoh.repository.IAvailabilityRepository;
-import judamov.sipoh.repository.ISemesterRepository;
-import judamov.sipoh.repository.IStatusAvailabilityRepository;
-import judamov.sipoh.repository.IUserRepository;
+import judamov.sipoh.repository.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -25,7 +19,9 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class AvailabilityServiceImpl {
 
+    private JwtServiceImpl jwtService;
     private final IAvailabilityRepository availabilityRepository;
+    private final IUserRoleRepository userRoleRepository;
     private final IUserRepository userRepository;
     private final ISemesterRepository semesterRepository;
     private final IStatusAvailabilityRepository statusAvailabilityRepository;
@@ -60,7 +56,7 @@ public class AvailabilityServiceImpl {
 
         StatusAvailability defaultStatus = getDefaultStatus();
 
-        deleteObsoleteAvailability(currentAvailability, incomingMap);
+        deleteObsoleteAvailability(currentAvailability, incomingMap, userId);
 
         saveNewAvailabilityBlocks(dto, user, semester, incomingMap, defaultStatus);
 
@@ -95,12 +91,27 @@ public class AvailabilityServiceImpl {
     }
 
     private void deleteObsoleteAvailability(List<Availability> currentAvailability,
-                                            Map<String, AvailabilityBlockDTO> incomingMap) {
+                                            Map<String, AvailabilityBlockDTO> incomingMap, Integer userRequestId) {
+        User userRequest=this.getUserById(userRequestId);
+        List<UserRol> userRolesRequest = userRoleRepository.findAllByUser(userRequest)
+                .orElseThrow(()-> new GenericAppException(HttpStatus.NOT_FOUND, "Roles del usuario no encontrados"));
+        boolean isAdmin=false;
+        /**
+         * Busca entre los roles para verofocar si
+         * puede eliminar las disponibilidades rechazadas
+         */
+        for(UserRol userRole : userRolesRequest) {
+            if(!userRole.getRole().getName().contains("PROFESOR")) {
+                isAdmin=true;
+                break;
+            }
+        }
         for (Availability existing : currentAvailability) {
             String key = existing.getDayOfWeek() + "-" + existing.getStartTime().getHour();
             boolean existsInNew = incomingMap.containsKey(key);
-
-            if (!existsInNew &&
+            if(isAdmin){
+                availabilityRepository.delete(existing);
+            } else if  (!existsInNew &&
                     !existing.getStatusAvailability().getDescription().equalsIgnoreCase("APROBADO")
                     && !existing.getStatusAvailability().getDescription().equalsIgnoreCase("RECHAZADO")) {
                 availabilityRepository.delete(existing);
