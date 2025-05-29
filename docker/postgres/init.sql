@@ -123,9 +123,12 @@ INSERT INTO roles (name) VALUES
                              ('COORDINADOR ACADEMICO'),
                              ('PROFESOR')
     ON CONFLICT DO NOTHING;
+insert into sigla (sigla )values
+    ('C.C')
+    on conflict do nothing;
 
-INSERT INTO type_document (description) VALUES
-    ('CEDULA DE CIUDADANIA')
+INSERT INTO type_document (sigla_id,description) VALUES
+    ('1','CEDULA DE CIUDADANIA')
     ON CONFLICT DO NOTHING;
 
 INSERT INTO semester (description, start_date, end_date, created_at, updated_at)
@@ -140,29 +143,29 @@ VALUES
     ON CONFLICT DO NOTHING;
 
 INSERT INTO level_subject (description) VALUES
-('NIVEL 1'),
-('NIVEL 2'),
-('NIVEL 3'),
-('NIVEL 4'),
-('NIVEL 5'),
-('NIVEL 6'),
-('NIVEL 7'),
-('NIVEL 8'),
-('NIVEL 9'),
-('NIVEL 10')
-ON CONFLICT DO NOTHING;
+                                            ('NIVEL 1'),
+                                            ('NIVEL 2'),
+                                            ('NIVEL 3'),
+                                            ('NIVEL 4'),
+                                            ('NIVEL 5'),
+                                            ('NIVEL 6'),
+                                            ('NIVEL 7'),
+                                            ('NIVEL 8'),
+                                            ('NIVEL 9'),
+                                            ('NIVEL 10')
+    ON CONFLICT DO NOTHING;
 INSERT INTO area (description) VALUES
-('MATEMÁTICAS COMPUTACIONALES'),
-('ARQUITECTURA Y FUNCIONAMIENTO DEL COMPUTADOR'),
-('ALGORÍTMICA E INFORMÁTICA'),
-('ADMINISTRACIÓN DE LA INFORMACIÓN'),
-('ADMINISTRATIVAS Y ORGANIZACIONALES'),
-('REDES Y COMUNICACIONES'),
-('INGENIERÍA DEL SOFTWARE'),
-('SISTEMAS'),
-('INGENIERÍA ARTIFICIAL'),
-('ELECTIVAS')
-ON CONFLICT DO NOTHING;
+                                   ('MATEMÁTICAS COMPUTACIONALES'),
+                                   ('ARQUITECTURA Y FUNCIONAMIENTO DEL COMPUTADOR'),
+                                   ('ALGORÍTMICA E INFORMÁTICA'),
+                                   ('ADMINISTRACIÓN DE LA INFORMACIÓN'),
+                                   ('ADMINISTRATIVAS Y ORGANIZACIONALES'),
+                                   ('REDES Y COMUNICACIONES'),
+                                   ('INGENIERÍA DEL SOFTWARE'),
+                                   ('SISTEMAS'),
+                                   ('INGENIERÍA ARTIFICIAL'),
+                                   ('ELECTIVAS')
+    ON CONFLICT DO NOTHING;
 
 
 
