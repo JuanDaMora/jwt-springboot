@@ -18,6 +18,5 @@ public class RegisterRequest {
     String password;
     String firstName;
     String lastName;
-    Boolean isProfesor;
     List<Integer> idsRoles;
 }

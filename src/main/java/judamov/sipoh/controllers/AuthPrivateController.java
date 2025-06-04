@@ -15,9 +15,15 @@ import java.util.List;
 public class AuthPrivateController {
 
     private final AuthServiceImpl authService;
+
     @GetMapping("/users")
     public ResponseEntity<List<UserDTO>> getAllUsers(){
         return ResponseEntity.ok(authService.getAllUsers());
+    }
+
+    @GetMapping("/users/{id}")
+    public ResponseEntity<UserDTO> getUserById(@PathVariable Integer id){
+        return ResponseEntity.ok(authService.getUserById(id));
     }
 
     @PostMapping("/changePassword")

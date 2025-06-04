@@ -135,4 +135,13 @@ public class AuthServiceImpl {
                 .token(token)
                 .build();
     }
+    public UserDTO getUserById(Integer id){
+        User user = userRepository.findOneById(id)
+                .orElseThrow(()-> new GenericAppException(HttpStatus.NOT_FOUND, "Usuaio no encontrado"));
+        if(user==null){
+            throw new GenericAppException(HttpStatus.NOT_FOUND, "Usuario no encontrado");
+        }
+        UserDTO userDTO= UserMapper.userToUserDTO(user);
+        return userDTO;
+    }
 }
