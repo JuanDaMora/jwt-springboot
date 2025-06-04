@@ -13,8 +13,11 @@ import java.util.List;
 public class TypeDocumentServiceImpl {
     private final ITypeDocumentRepository typeDocumentRepository;
 
-    public List<TypeDocument> getAllTypeDocuments(){
-        return typeDocumentRepository.findAll();
+    public List<TypeDocumentDTO> getAllTypeDocuments(){
+        return typeDocumentRepository.findAll()
+                .stream()
+                .map(typeDocument -> new TypeDocumentDTO(typeDocument.getDescription()))
+                .toList();
     }
     public TypeDocument createTypeDocument(TypeDocumentDTO typeDocumentDTO) {
         TypeDocument newTypeDocument= new TypeDocument();

@@ -17,7 +17,7 @@ public class TypeDocumentController {
     private final TypeDocumentServiceImpl typeDocumentService;
 
     @GetMapping
-    public ResponseEntity<List<TypeDocument>> getAllTypeDocuments (){
+    public ResponseEntity<List<TypeDocumentDTO>> getAllTypeDocuments (){
         return ResponseEntity.ok(typeDocumentService.getAllTypeDocuments());
     }
     @PostMapping
