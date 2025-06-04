@@ -21,10 +21,10 @@ public class UserRol  {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
     @ManyToOne
-    @JoinColumn(name="user_id")
+    @JoinColumn(name="id_user")
     private User user;
     @ManyToOne
-    @JoinColumn(name="role_id")
+    @JoinColumn(name="id_role")
     private Role role;
     @CreationTimestamp
     @Column(name = "creation_date", updatable = false)

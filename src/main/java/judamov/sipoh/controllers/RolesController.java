@@ -1,6 +1,6 @@
 package judamov.sipoh.controllers;
 
-import judamov.sipoh.entity.Role;
+import judamov.sipoh.dto.RoleDTO;
 import judamov.sipoh.service.impl.RoleServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -18,7 +18,7 @@ public class RolesController {
     private final RoleServiceImpl roleService;
 
     @GetMapping
-    public ResponseEntity<List<Role>> getAllRoles(){
+    public ResponseEntity<List<RoleDTO>> getAllRoles(){
         return ResponseEntity.ok(roleService.getAllRoles());
     }
 }

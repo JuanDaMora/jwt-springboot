@@ -11,7 +11,6 @@ services:
     ports:
       - "5433:5432"  # cambiamos el puerto externo para no chocar con tu PostgreSQL local
     volumes:
-      - pg_data:/var/lib/postgresql/data
       - ./docker/postgres/init.sql:/docker-entrypoint-initdb.d/init.sql
 
   app:
@@ -25,7 +24,7 @@ services:
       SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/sigha
       SPRING_DATASOURCE_USERNAME: usuario
       SPRING_DATASOURCE_PASSWORD: clave123
-      SPRING_JPA_HIBERNATE_DDL_AUTO: update
+      SPRING_JPA_HIBERNATE_DDL_AUTO: none
       SPRING_JPA_SHOW_SQL: "true"
       SPRING_JPA_PROPERTIES_HIBERNATE_DIALECT: org.hibernate.dialect.PostgreSQLDialect
       SPRING_JPA_PROPERTIES_HIBERNATE_DEFAULT_SCHEMA: sigha
