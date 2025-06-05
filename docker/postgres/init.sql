@@ -3,24 +3,24 @@ SET search_path TO sigha;
 
 -- Tabla sigla
 CREATE TABLE IF NOT EXISTS sigla (
-                                     id SERIAL PRIMARY KEY,
-                                     sigla VARCHAR(255),
+    id SERIAL PRIMARY KEY,
+    sigla VARCHAR(255),
     creation_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     update_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP
     );
 
 -- Tabla roles
 CREATE TABLE IF NOT EXISTS roles (
-                                     id SERIAL PRIMARY KEY,
-                                     name VARCHAR(255) NOT NULL UNIQUE,
+    id SERIAL PRIMARY KEY,
+    name VARCHAR(255) NOT NULL UNIQUE,
     creation_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     update_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP
     );
 
 -- Tabla type_document
 CREATE TABLE IF NOT EXISTS type_document (
-                                             id SERIAL PRIMARY KEY,
-                                             sigla_id INTEGER REFERENCES sigla(id),
+    id SERIAL PRIMARY KEY,
+    sigla_id INTEGER REFERENCES sigla(id),
     description VARCHAR(255) NOT NULL UNIQUE,
     creation_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     update_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP
@@ -28,8 +28,8 @@ CREATE TABLE IF NOT EXISTS type_document (
 
 -- Tabla semester
 CREATE TABLE IF NOT EXISTS semester (
-                                        id SERIAL PRIMARY KEY,
-                                        description VARCHAR(255) NOT NULL UNIQUE,
+    id SERIAL PRIMARY KEY,
+    description VARCHAR(255) NOT NULL UNIQUE,
     start_date DATE NOT NULL UNIQUE,
     end_date DATE NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
@@ -38,8 +38,8 @@ CREATE TABLE IF NOT EXISTS semester (
 
 -- Tabla user
 CREATE TABLE IF NOT EXISTS "user" (
-                                      id SERIAL PRIMARY KEY,
-                                      email VARCHAR(255) UNIQUE,
+    id SERIAL PRIMARY KEY,
+    email VARCHAR(255) UNIQUE,
     id_type_document INTEGER NOT NULL REFERENCES type_document(id),
     documento VARCHAR(255) NOT NULL UNIQUE,
     password VARCHAR(255) NOT NULL,
@@ -53,8 +53,8 @@ CREATE TABLE IF NOT EXISTS "user" (
 
 -- Tabla user_rol
 CREATE TABLE IF NOT EXISTS user_rol (
-                                        id SERIAL PRIMARY KEY,
-                                        id_user INTEGER NOT NULL REFERENCES "user"(id),
+id SERIAL PRIMARY K EY,
+id_user INTEGER NOT NU  LL REFERENCES "user"(id),
     id_role INTEGER NOT NULL REFERENCES roles(id),
     creation_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     update_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP
@@ -62,16 +62,16 @@ CREATE TABLE IF NOT EXISTS user_rol (
 
 -- Tabla area
 CREATE TABLE IF NOT EXISTS area (
-                                    id SERIAL PRIMARY KEY,
-                                    description VARCHAR(255) NOT NULL,
+    id SERIAL PRIMARY KEY,
+    description VARCHAR(255) NOT NULL,
     creation_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     update_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP
     );
 
 -- Tabla user_area
 CREATE TABLE IF NOT EXISTS user_area (
-                                         id SERIAL PRIMARY KEY,
-                                         id_user INTEGER NOT NULL REFERENCES "user"(id),
+    id SERIAL PRIMARY KEY,
+    id_user INTEGER NOT NULL REFERENCES "user"(id),
     id_area INTEGER NOT NULL REFERENCES area(id),
     creation_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     update_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP
@@ -79,16 +79,16 @@ CREATE TABLE IF NOT EXISTS user_area (
 
 -- Tabla level_subject
 CREATE TABLE IF NOT EXISTS level_subject (
-                                             id SERIAL PRIMARY KEY,
-                                             description VARCHAR(255) NOT NULL,
+    id SERIAL PRIMARY KEY,
+    description VARCHAR(255) NOT NULL,
     creation_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     update_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP
     );
 
 -- Tabla subject
 CREATE TABLE IF NOT EXISTS subject (
-                                       id SERIAL PRIMARY KEY,
-                                       id_area INTEGER NOT NULL REFERENCES area(id),
+    id SERIAL PRIMARY KEY,
+    id_area INTEGER NOT NULL REFERENCES area(id),
     id_level_subject INTEGER NOT NULL REFERENCES level_subject(id),
     codigo VARCHAR(255),
     name VARCHAR(255),
@@ -99,16 +99,16 @@ CREATE TABLE IF NOT EXISTS subject (
 
 -- Tabla status_availability
 CREATE TABLE IF NOT EXISTS status_availability (
-                                                   id SERIAL PRIMARY KEY,
-                                                   description VARCHAR(255) NOT NULL,
+    id SERIAL PRIMARY KEY,
+    description VARCHAR(255) NOT NULL,
     creation_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     update_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP
     );
 
 -- Tabla availability
 CREATE TABLE IF NOT EXISTS availability (
-                                            id SERIAL PRIMARY KEY,
-                                            id_user INTEGER NOT NULL REFERENCES "user"(id),
+    id SERIAL PRIMARY KEY,
+    id_user INTEGER NOT NULL REFERENCES "user"(id),
     id_semester INTEGER NOT NULL REFERENCES semester(id),
     id_status_availability INTEGER NOT NULL REFERENCES status_availability(id),
     start_time TIME NOT NULL,
