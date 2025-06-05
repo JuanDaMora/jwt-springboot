@@ -1,12 +1,10 @@
 package judamov.sipoh.service.impl;
 
 import judamov.sipoh.dto.*;
-import judamov.sipoh.entity.Role;
-import judamov.sipoh.entity.TypeDocument;
-import judamov.sipoh.entity.User;
-import judamov.sipoh.entity.UserRol;
+import judamov.sipoh.entity.*;
 import judamov.sipoh.exceptions.GenericAppException;
 import judamov.sipoh.mappers.UserMapper;
+import judamov.sipoh.repository.IAccessControlRepository;
 import judamov.sipoh.repository.IRoleRepository;
 import judamov.sipoh.repository.ITypeDocumentRepository;
 import judamov.sipoh.repository.IUserRepository;
@@ -17,6 +15,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -30,6 +29,7 @@ public class AuthServiceImpl {
     private final PasswordEncoder passwordEncoder;
     private final AuthenticationManager authenticationManager;
     private final JwtServiceImpl jwtServiceImpl;
+    private final IAccessControlRepository accessControlRepository;
 
 
     public List<UserDTO> getAllUsers() {
@@ -61,6 +61,12 @@ public class AuthServiceImpl {
             user.setTokenHash(tokenHash);
             userRepository.save(user);
         }
+
+        AccessControl accessControl= accessControlRepository.findOneByUser(user)
+                .orElseThrow(() -> new GenericAppException(HttpStatus.NOT_FOUND,
+                        "Access control no econtrado"));
+        accessControl.setLastLogin(new Date());
+        accessControlRepository.save(accessControl);
 
         return AuthResponse.builder()
                 .token(token)
@@ -106,6 +112,18 @@ public class AuthServiceImpl {
             userRepository.save(user);
         } catch (Exception e) {
             throw new GenericAppException(HttpStatus.INTERNAL_SERVER_ERROR, "Error inesperado al guardar el usuario");
+        }
+        User newUser = userRepository.findOneByDocumento(user.getDocumento())
+                .orElseThrow(() -> new GenericAppException(HttpStatus.BAD_REQUEST,
+                        "Tipo de documento no encontrado con id: " + request.getIdTipoDocumento()));
+        AccessControl newAccessControl= AccessControl.builder()
+                .user(newUser)
+                .lastLogin(new Date())
+                .build();
+        try {
+            accessControlRepository.save(newAccessControl);
+        } catch (Exception e) {
+            throw new GenericAppException(HttpStatus.INTERNAL_SERVER_ERROR, "Error inesperado al guardar el access control");
         }
 
         return RegisterResponse.builder()
