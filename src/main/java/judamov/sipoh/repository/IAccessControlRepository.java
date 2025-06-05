@@ -10,4 +10,5 @@ import java.util.Optional;
 @Repository
 public interface IAccessControlRepository extends JpaRepository<AccessControl, Integer> {
     Optional<AccessControl> findOneByUser(User user);
+    Optional<AccessControl> findByUserId(Integer id_user);
 }

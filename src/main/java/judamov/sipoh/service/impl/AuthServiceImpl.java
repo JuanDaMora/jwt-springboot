@@ -4,10 +4,7 @@ import judamov.sipoh.dto.*;
 import judamov.sipoh.entity.*;
 import judamov.sipoh.exceptions.GenericAppException;
 import judamov.sipoh.mappers.UserMapper;
-import judamov.sipoh.repository.IAccessControlRepository;
-import judamov.sipoh.repository.IRoleRepository;
-import judamov.sipoh.repository.ITypeDocumentRepository;
-import judamov.sipoh.repository.IUserRepository;
+import judamov.sipoh.repository.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -30,13 +27,19 @@ public class AuthServiceImpl {
     private final AuthenticationManager authenticationManager;
     private final JwtServiceImpl jwtServiceImpl;
     private final IAccessControlRepository accessControlRepository;
+    private final IUserAreaRepository userAreaRepository;
 
 
     public List<UserDTO> getAllUsers() {
-        return userRepository.findAll()
+        List<UserDTO> userDTOList= userRepository.findAll()
                 .stream()
                 .map(UserMapper::userToUserDTO) // usar el mapper aquí
                 .collect(Collectors.toList());
+        for (UserDTO userDTO : userDTOList) {
+            accessControlRepository.findByUserId(userDTO.getId())
+                    .ifPresent(accessControl -> userDTO.setLastLogin(accessControl.getLastLogin()));
+        }
+        return userDTOList;
     }
 
     public AuthResponse login(LoginRequest request) {
@@ -113,11 +116,21 @@ public class AuthServiceImpl {
         } catch (Exception e) {
             throw new GenericAppException(HttpStatus.INTERNAL_SERVER_ERROR, "Error inesperado al guardar el usuario");
         }
-        User newUser = userRepository.findOneByDocumento(user.getDocumento())
-                .orElseThrow(() -> new GenericAppException(HttpStatus.BAD_REQUEST,
-                        "Tipo de documento no encontrado con id: " + request.getIdTipoDocumento()));
-        AccessControl newAccessControl= AccessControl.builder()
-                .user(newUser)
+
+        // Asociar áreas si vienen en la solicitud
+        if (request.getIdsAreas() != null && !request.getIdsAreas().isEmpty()) {
+            List<UserArea> userAreas = request.getIdsAreas().stream().map(areaId -> {
+                Area area = new Area();
+                area.setId(areaId);
+                return new UserArea(null, user, area, null, null);
+            }).collect(Collectors.toList());
+
+            userAreaRepository.saveAll(userAreas);
+        }
+
+        // Registrar AccessControl
+        AccessControl newAccessControl = AccessControl.builder()
+                .user(user)
                 .lastLogin(new Date())
                 .build();
         try {

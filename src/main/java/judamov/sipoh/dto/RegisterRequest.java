@@ -19,4 +19,5 @@ public class RegisterRequest {
     String firstName;
     String lastName;
     List<Integer> idsRoles;
+    List<Integer> idsAreas;
 }
