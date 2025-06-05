@@ -12,12 +12,4 @@ public class TypeDocumentDTO {
     private String sigla;
     private Integer idSigla;
 
-    public TypeDocumentDTO(String description, String sigla) {
-        this.description = description;
-        this.sigla = sigla;
-    }
-
-    public TypeDocumentDTO(String description) {
-        this.description = description;
-    }
 }
