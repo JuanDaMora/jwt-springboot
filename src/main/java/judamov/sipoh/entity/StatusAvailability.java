@@ -24,7 +24,7 @@ public class StatusAvailability {
 
     @Column(name="description", nullable = false)
     private String description;
-
+    @CreationTimestamp
     @Column(name = "creation_date", updatable = false)
     private LocalDateTime createdAt;
     @UpdateTimestamp

@@ -23,6 +23,7 @@ public class Role {
     private String name;
     @OneToMany(mappedBy = "role", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<UserRol> userRoles;
+    @CreationTimestamp
     @Column(name = "creation_date", updatable = false)
     private LocalDateTime createdAt;
     @UpdateTimestamp

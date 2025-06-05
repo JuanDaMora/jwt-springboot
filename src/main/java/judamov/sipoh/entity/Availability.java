@@ -41,6 +41,7 @@ public class Availability {
     @Column(name = "day_of_week", nullable = false)
     private DayOfWeekEnum dayOfWeek;
 
+    @CreationTimestamp
     @Column(name = "creation_date", updatable = false)
     private LocalDateTime createdAt;
     @UpdateTimestamp

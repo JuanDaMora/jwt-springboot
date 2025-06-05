@@ -1,5 +1,6 @@
 package judamov.sipoh.controllers;
 
+import judamov.sipoh.dto.SiglaDTO;
 import judamov.sipoh.dto.TypeDocumentDTO;
 import judamov.sipoh.entity.TypeDocument;
 import judamov.sipoh.service.impl.TypeDocumentServiceImpl;
@@ -21,8 +22,13 @@ public class TypeDocumentController {
         return ResponseEntity.ok(typeDocumentService.getAllTypeDocuments());
     }
     @PostMapping
-    public ResponseEntity<TypeDocument> createTypeDocument(@RequestBody TypeDocumentDTO request) {
+    public ResponseEntity<Boolean> createTypeDocument(@RequestBody TypeDocumentDTO request) {
         return ResponseEntity.ok(typeDocumentService.createTypeDocument(request));
+    }
+
+    @GetMapping("/sigla")
+    public ResponseEntity<List<SiglaDTO>> getAllSiga(){
+        return ResponseEntity.ok(typeDocumentService.getAllSiglas());
     }
 
 }

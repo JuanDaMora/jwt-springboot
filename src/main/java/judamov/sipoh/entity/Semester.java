@@ -31,7 +31,7 @@ public class Semester {
     private LocalDate startDate;
     @Column(nullable = false)
     private LocalDate endDate;
-
+    @CreationTimestamp
     @Column(name = "created_at", updatable = false)
     private LocalDateTime createdAt;
     @UpdateTimestamp
