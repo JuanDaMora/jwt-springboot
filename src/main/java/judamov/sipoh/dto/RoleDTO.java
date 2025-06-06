@@ -1,3 +1,3 @@
 package judamov.sipoh.dto;
 
-public record RoleDTO(Integer id, String name) {}
+public record RoleDTO(Long id, String name) {}

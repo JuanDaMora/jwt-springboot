@@ -8,4 +8,6 @@ public interface IAreaService {
     List<AreaDTO> getAllAreas();
 
     Boolean createArea(AreaDTO areaDTO);
+
+    Boolean updateArea(Long id,AreaDTO areaDTO);
 }

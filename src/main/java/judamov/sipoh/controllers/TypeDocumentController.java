@@ -25,10 +25,11 @@ public class TypeDocumentController {
     public ResponseEntity<Boolean> createTypeDocument(@RequestBody TypeDocumentDTO request) {
         return ResponseEntity.ok(typeDocumentService.createTypeDocument(request));
     }
-
     @GetMapping("/sigla")
     public ResponseEntity<List<SiglaDTO>> getAllSiga(){
+
         return ResponseEntity.ok(typeDocumentService.getAllSiglas());
     }
+
 
 }

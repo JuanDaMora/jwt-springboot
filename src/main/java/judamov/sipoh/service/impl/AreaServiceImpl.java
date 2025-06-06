@@ -1,5 +1,6 @@
 package judamov.sipoh.service.impl;
 
+import jakarta.transaction.Transactional;
 import judamov.sipoh.dto.AreaDTO;
 import judamov.sipoh.entity.Area;
 import judamov.sipoh.exceptions.GenericAppException;
@@ -39,4 +40,21 @@ public class AreaServiceImpl  implements IAreaService {
 
         return true;
     }
+    @Transactional
+    public Boolean updateArea(Long idArea, AreaDTO areaDTO){
+        Area area=areaRepository.findOneById(idArea)
+                .orElseThrow(
+                        ()-> new GenericAppException(HttpStatus.NOT_FOUND,
+                                "No se encontro el area con id: "+areaDTO.getId())
+                );
+        area.setDescription(areaDTO.getDescription());
+        try{
+            areaRepository.save(area);
+        }catch (Exception e){
+            throw new GenericAppException(HttpStatus.INTERNAL_SERVER_ERROR,
+                    "Error al actualizar el area con id: "+ areaDTO.getId());
+        }
+        return true;
+    }
+
 }

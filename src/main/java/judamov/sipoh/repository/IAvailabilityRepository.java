@@ -12,7 +12,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Repository
-public interface IAvailabilityRepository extends JpaRepository<Availability, Integer> {
+public interface IAvailabilityRepository extends JpaRepository<Availability, Long> {
     Optional<List<Availability>> findByUserAndSemester(User user, Semester semester);
 
     void deleteByUserAndSemester(User user, Semester semester);

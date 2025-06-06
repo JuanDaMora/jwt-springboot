@@ -25,4 +25,9 @@ public class AreaController {
         return ResponseEntity.ok(areaService.createArea(areaDTO));
     }
 
+    @PutMapping("/{id}")
+    public ResponseEntity<Boolean> updateArea(@PathVariable Long id,@RequestBody AreaDTO areaDTO){
+        return  ResponseEntity.ok(areaService.updateArea(id, areaDTO));
+    }
+
 }

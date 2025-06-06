@@ -8,7 +8,7 @@ import org.springframework.stereotype.Repository;
 import java.util.Optional;
 
 @Repository
-public interface ISemesterRepository extends JpaRepository<Semester, Integer> {
-    Optional<Semester> findOneById(Integer id);
+public interface ISemesterRepository extends JpaRepository<Semester, Long> {
+    Optional<Semester> findOneById(Long id);
     Optional<Semester> findOneByDescription(String description);
 }

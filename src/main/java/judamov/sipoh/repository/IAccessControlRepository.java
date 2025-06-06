@@ -8,7 +8,7 @@ import org.springframework.stereotype.Repository;
 import java.util.Optional;
 
 @Repository
-public interface IAccessControlRepository extends JpaRepository<AccessControl, Integer> {
+public interface IAccessControlRepository extends JpaRepository<AccessControl, Long> {
     Optional<AccessControl> findOneByUser(User user);
-    Optional<AccessControl> findByUserId(Integer id_user);
+    Optional<AccessControl> findByUserId(Long id_user);
 }

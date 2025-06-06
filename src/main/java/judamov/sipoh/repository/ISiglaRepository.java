@@ -8,8 +8,8 @@ import javax.swing.text.html.Option;
 import java.util.Optional;
 
 @Repository
-public interface ISiglaRepository extends JpaRepository<Sigla, Integer> {
-    Optional<Sigla> findOneById(Integer id);
+public interface ISiglaRepository extends JpaRepository<Sigla, Long> {
+    Optional<Sigla> findOneById(Long id);
 
     Optional<Sigla> findOneBySigla(String sigla);
 }

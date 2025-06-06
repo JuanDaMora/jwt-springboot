@@ -8,6 +8,6 @@ import java.util.Optional;
 
 @Repository
 public interface ITypeDocumentRepository extends JpaRepository<TypeDocument, Long> {
-    Optional<TypeDocument> findOneById(Integer id);
+    Optional<TypeDocument> findOneById(Long id);
 
 }

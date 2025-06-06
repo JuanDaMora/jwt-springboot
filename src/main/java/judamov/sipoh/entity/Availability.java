@@ -20,7 +20,7 @@ import java.util.Date;
 public class Availability {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    Long id;
+    private Long id;
 
     @ManyToOne()
     @JoinColumn(name = "id_status_availability", nullable = false)

@@ -19,19 +19,19 @@ import java.time.LocalDateTime;
 public class Subject {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    Integer id;
+    private Long id;
     @ManyToOne
     @JoinColumn(name="id_area",nullable = false)
-    Area area;
+    private Area area;
     @ManyToOne
     @JoinColumn(name="id_level_subject",nullable = false)
-    LevelSubject levelSubject;
+    private LevelSubject levelSubject;
     @Column(name = "codigo")
-    String codigo;
+    private String codigo;
     @Column(name = "name")
-    String name;
+    private String name;
     @Column(name= "max_students")
-    Integer max_students;
+    private Integer max_students;
     @CreationTimestamp
     @Column(name = "creation_date", updatable = false)
     private LocalDateTime createdAt;

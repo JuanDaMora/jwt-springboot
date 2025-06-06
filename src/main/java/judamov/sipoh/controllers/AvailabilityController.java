@@ -15,8 +15,8 @@ public class AvailabilityController {
 
     @GetMapping
     public ResponseEntity<AvailabilityDTO> getAvailability(
-            @RequestHeader Integer userId,
-            @RequestHeader Integer semesterId) {
+            @RequestHeader Long userId,
+            @RequestHeader Long semesterId) {
 
 
         AvailabilityDTO dto = availabilityService.getAvailability(userId,semesterId);
@@ -24,8 +24,8 @@ public class AvailabilityController {
     }
     @PostMapping
     public ResponseEntity<Boolean> createAvailability(
-            @RequestHeader Integer userId,
-            @RequestHeader Integer semesterId,
+            @RequestHeader Long userId,
+            @RequestHeader Long semesterId,
             @RequestBody AvailabilityDTO dto) {
         return ResponseEntity.ok(availabilityService.createAvailability(userId, semesterId, dto));
     }

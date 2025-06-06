@@ -12,12 +12,12 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 public class RegisterRequest {
-    Integer idTipoDocumento;
+    Long idTipoDocumento;
     String email;
     String documento;
     String password;
     String firstName;
     String lastName;
-    List<Integer> idsRoles;
-    List<Integer> idsAreas;
+    List<Long> idsRoles;
+    List<Long> idsAreas;
 }

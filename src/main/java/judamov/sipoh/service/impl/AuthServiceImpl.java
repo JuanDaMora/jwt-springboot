@@ -166,7 +166,7 @@ public class AuthServiceImpl {
                 .token(token)
                 .build();
     }
-    public UserDTO getUserById(Integer id){
+    public UserDTO getUserById(Long id){
         User user = userRepository.findOneById(id)
                 .orElseThrow(()-> new GenericAppException(HttpStatus.NOT_FOUND, "Usuaio no encontrado"));
         if(user==null){

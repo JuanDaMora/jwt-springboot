@@ -22,7 +22,7 @@ import java.util.Date;
 public class AccessControl {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    Integer Id;
+    private Long Id;
 
     @ManyToOne
     @JoinColumn(name = "id_user",nullable = false)

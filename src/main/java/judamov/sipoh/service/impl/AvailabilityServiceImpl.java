@@ -25,7 +25,7 @@ public class AvailabilityServiceImpl {
     private final IUserRepository userRepository;
     private final ISemesterRepository semesterRepository;
     private final IStatusAvailabilityRepository statusAvailabilityRepository;
-    public AvailabilityDTO getAvailability(Integer userId, Integer semesterId) {
+    public AvailabilityDTO getAvailability(Long userId, Long semesterId) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new GenericAppException(HttpStatus.NOT_FOUND, "Usuario no encontrado"));
         Semester semester = semesterRepository.findById(semesterId)
@@ -47,7 +47,7 @@ public class AvailabilityServiceImpl {
         return AvailabilityDTO.builder().disponibilidad(availabilityMap).build();
     }
     @Transactional
-    public Boolean createAvailability(Integer userId, Integer semesterId, AvailabilityDTO dto) {
+    public Boolean createAvailability(Long userId, Long semesterId, AvailabilityDTO dto) {
         User user = getUserById(userId);
         Semester semester = getSemesterById(semesterId);
 
@@ -63,18 +63,18 @@ public class AvailabilityServiceImpl {
         return true;
     }
 
-    private User getUserById(Integer userId) {
+    private User getUserById(Long userId) {
         return userRepository.findById(userId)
                 .orElseThrow(() -> new GenericAppException(HttpStatus.NOT_FOUND, "Usuario no encontrado"));
     }
 
-    private Semester getSemesterById(Integer semesterId) {
+    private Semester getSemesterById(Long semesterId) {
         return semesterRepository.findById(semesterId)
                 .orElseThrow(() -> new GenericAppException(HttpStatus.NOT_FOUND, "Semestre no encontrado"));
     }
 
     private StatusAvailability getDefaultStatus() {
-        return statusAvailabilityRepository.findById(1)
+        return statusAvailabilityRepository.findById(1L)
                 .orElseThrow(() -> new GenericAppException(HttpStatus.NOT_FOUND, "Estado por defecto no encontrado"));
     }
 
@@ -91,13 +91,13 @@ public class AvailabilityServiceImpl {
     }
 
     private void deleteObsoleteAvailability(List<Availability> currentAvailability,
-                                            Map<String, AvailabilityBlockDTO> incomingMap, Integer userRequestId) {
+                                            Map<String, AvailabilityBlockDTO> incomingMap, Long userRequestId) {
         User userRequest=this.getUserById(userRequestId);
         List<UserRol> userRolesRequest = userRoleRepository.findAllByUser(userRequest)
                 .orElseThrow(()-> new GenericAppException(HttpStatus.NOT_FOUND, "Roles del usuario no encontrados"));
         boolean isAdmin=false;
         /**
-         * Busca entre los roles para verofocar si
+         * Busca entre los roles para veroficar si
          * puede eliminar las disponibilidades rechazadas
          */
         for(UserRol userRole : userRolesRequest) {

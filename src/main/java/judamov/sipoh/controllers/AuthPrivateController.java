@@ -22,7 +22,7 @@ public class AuthPrivateController {
     }
 
     @GetMapping("/users/{id}")
-    public ResponseEntity<UserDTO> getUserById(@PathVariable Integer id){
+    public ResponseEntity<UserDTO> getUserById(@PathVariable Long id){
         return ResponseEntity.ok(authService.getUserById(id));
     }
 

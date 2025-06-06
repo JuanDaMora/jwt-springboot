@@ -21,7 +21,7 @@ import java.time.LocalDateTime;
 public class Sigla {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+    private Long id;
     @Column(name = "sigla")
     private String sigla;
     @CreationTimestamp

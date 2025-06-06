@@ -24,6 +24,7 @@ public class TypeDocumentServiceImpl  implements ITypeDocumentService {
     private final ISiglaRepository siglaRepository;
 
     public List<TypeDocumentDTO> getAllTypeDocuments(){
+        List<TypeDocument> typeDocumentList= typeDocumentRepository.findAll();
         return typeDocumentRepository.findAll()
                 .stream()
                 .map(typeDocument -> new TypeDocumentDTO(typeDocument.getDescription(),typeDocument.getSigla().getSigla(), typeDocument.getSigla().getId()))

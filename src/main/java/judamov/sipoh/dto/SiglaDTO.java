@@ -10,6 +10,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class SiglaDTO {
-    Integer id;
+    Long id;
     String sigla;
 }

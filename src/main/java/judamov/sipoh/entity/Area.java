@@ -22,7 +22,7 @@ import java.time.LocalDateTime;
 public class Area implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+    private Long id;
     @Column(name="description", nullable = false)
     private String description;
     @CreationTimestamp

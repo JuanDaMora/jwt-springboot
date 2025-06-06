@@ -19,16 +19,13 @@ import java.time.LocalDateTime;
 public class UserArea {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
-
+    private Long id;
     @ManyToOne
     @JoinColumn(name = "id_user",nullable = false)
     private User user;
-
     @ManyToOne
     @JoinColumn(name = "id_area",nullable = false)
     private Area area;
-
     @CreationTimestamp
     @Column(name = "creation_date", updatable = false)
     private LocalDateTime createdAt;

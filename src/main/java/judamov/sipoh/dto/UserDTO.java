@@ -14,15 +14,15 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 public class UserDTO {
-    private Integer id;
+    private Long id;
     private String email;
-    private Integer id_type_document;
+    private Long id_type_document;
     private String documento;
     private String firstName;
     private String lastName;
     private Boolean isActive;
 
-    private List<Integer> idsRoles;
+    private List<Long> idsRoles;
     private List<String> rolesDescriptions;
 
     private LocalDateTime createAt;

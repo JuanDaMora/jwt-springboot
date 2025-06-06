@@ -8,12 +8,12 @@ import org.springframework.stereotype.Repository;
 import java.util.Optional;
 
 @Repository
-public interface IUserRepository extends JpaRepository<User, Integer> {
+public interface IUserRepository extends JpaRepository<User, Long> {
 
     @EntityGraph(attributePaths = {"userRoles", "userRoles.role"})
     Optional<User> findOneByDocumento(String documento);
 
     Optional<User> findOneByEmail(String email);
 
-    Optional<User> findOneById(Integer id);
+    Optional<User> findOneById(Long id);
 }

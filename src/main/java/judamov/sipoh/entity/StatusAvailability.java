@@ -20,7 +20,7 @@ import java.time.LocalDateTime;
 public class StatusAvailability {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+    private Long id;
 
     @Column(name="description", nullable = false)
     private String description;

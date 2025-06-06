@@ -10,7 +10,8 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Builder
 public class AvailabilityBlockDTO {
+    private Long id;
     private Integer hour;
-    private Integer statusId;
+    private Long statusId;
     private String statusDescription;
 }

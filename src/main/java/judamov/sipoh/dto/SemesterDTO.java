@@ -15,7 +15,7 @@ import java.time.LocalDate;
 @AllArgsConstructor
 
 public class SemesterDTO {
-    Integer id;
+    Long id;
     String description;
     LocalDate startDate;
     LocalDate endDate;
