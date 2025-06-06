@@ -28,6 +28,7 @@ public class AuthServiceImpl {
     private final JwtServiceImpl jwtServiceImpl;
     private final IAccessControlRepository accessControlRepository;
     private final IUserAreaRepository userAreaRepository;
+    private final UserRolServiceImpl userRolService;
 
 
     public List<UserDTO> getAllUsers() {
@@ -168,11 +169,30 @@ public class AuthServiceImpl {
     }
     public UserDTO getUserById(Long id){
         User user = userRepository.findOneById(id)
-                .orElseThrow(()-> new GenericAppException(HttpStatus.NOT_FOUND, "Usuaio no encontrado"));
+                .orElseThrow(()-> new GenericAppException(HttpStatus.NOT_FOUND, "Usuario no encontrado"));
         if(user==null){
             throw new GenericAppException(HttpStatus.NOT_FOUND, "Usuario no encontrado");
         }
         UserDTO userDTO= UserMapper.userToUserDTO(user);
         return userDTO;
+    }
+
+    public Boolean updateUser(Long id, UserDTO userDTO){
+        User user = userRepository.findOneById(id)
+                .orElseThrow(()-> new GenericAppException(HttpStatus.NOT_FOUND, "Usuario no encontrado"));
+        user= UserMapper.userDTOtoUser(userDTO,user.getTypeDocument());
+        user.setId(id);
+        List<Role> roleList= userRolService.getRolListFromUser(user);
+        for(Role rol : roleList) {
+            if(rol.getName().equals("DIRECTOR DE ESCUELA") || rol.getName().equals("COORDINADOR ACADEMICO")){
+                try{
+                    userRepository.save(user);
+                }catch (Exception e){
+                    throw new GenericAppException(HttpStatus.INTERNAL_SERVER_ERROR,
+                            "Error ctualizando el usuario");
+                }
+            }
+        }
+        return true;
     }
 }

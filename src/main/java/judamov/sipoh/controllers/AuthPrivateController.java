@@ -20,16 +20,16 @@ public class AuthPrivateController {
     public ResponseEntity<List<UserDTO>> getAllUsers(){
         return ResponseEntity.ok(authService.getAllUsers());
     }
-
     @GetMapping("/users/{id}")
     public ResponseEntity<UserDTO> getUserById(@PathVariable Long id){
         return ResponseEntity.ok(authService.getUserById(id));
     }
-
     @PostMapping("/changePassword")
-    public ResponseEntity<ChangePasswordResponse> changePassword(
-        @RequestBody ChangePasswordDTO resetpassword) {
+    public ResponseEntity<ChangePasswordResponse> changePassword(@RequestBody ChangePasswordDTO resetpassword) {
         return ResponseEntity.ok(authService.changePassword(resetpassword));
-
+    }
+    @PutMapping("/{id}")
+    public ResponseEntity<Boolean> updateUser(@PathVariable Long id, @RequestBody UserDTO userDTO){
+        return ResponseEntity.ok(authService.updateUser(id, userDTO));
     }
 }

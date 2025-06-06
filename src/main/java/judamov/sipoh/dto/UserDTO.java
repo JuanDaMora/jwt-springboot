@@ -21,10 +21,8 @@ public class UserDTO {
     private String firstName;
     private String lastName;
     private Boolean isActive;
-
     private List<Long> idsRoles;
     private List<String> rolesDescriptions;
-
     private LocalDateTime createAt;
     private LocalDateTime updatedAt;
     private Date lastLogin;
