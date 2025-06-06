@@ -1,10 +1,12 @@
 package judamov.sipoh.service.impl;
 
+import jakarta.transaction.Transactional;
 import judamov.sipoh.dto.SemesterDTO;
 import judamov.sipoh.entity.Semester;
 import judamov.sipoh.entity.User;
 import judamov.sipoh.exceptions.GenericAppException;
 import judamov.sipoh.repository.ISemesterRepository;
+import judamov.sipoh.service.interfaces.ISemesterService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -13,13 +15,14 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
-public class SemesterServiceImpl {
+public class SemesterServiceImpl implements ISemesterService {
     private final ISemesterRepository semesterRepository;
-
+    @Override
     public List<Semester> getAllSemesters(){
         return semesterRepository.findAll();
     }
-
+    @Override
+    @Transactional
     public Boolean addSemester(SemesterDTO semesterDTO){
         semesterRepository.findOneByDescription(semesterDTO.getDescription())
                 .ifPresent(semester -> {
@@ -33,7 +36,8 @@ public class SemesterServiceImpl {
         }
         return true;
     }
-
+    @Override
+    @Transactional
     public SemesterDTO updateSemester(SemesterDTO semesterDTO){
         Semester semester= semesterRepository.findOneById(semesterDTO.getId())
                 .orElseThrow(() -> new GenericAppException(HttpStatus.NOT_FOUND, "Semestre no encontrado"));

@@ -7,6 +7,7 @@ import judamov.sipoh.entity.*;
 import judamov.sipoh.enums.DayOfWeekEnum;
 import judamov.sipoh.exceptions.GenericAppException;
 import judamov.sipoh.repository.*;
+import judamov.sipoh.service.interfaces.IAvailabilityService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -17,14 +18,14 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
-public class AvailabilityServiceImpl {
+public class AvailabilityServiceImpl implements IAvailabilityService {
 
-    private JwtServiceImpl jwtService;
     private final IAvailabilityRepository availabilityRepository;
     private final IUserRoleRepository userRoleRepository;
     private final IUserRepository userRepository;
     private final ISemesterRepository semesterRepository;
     private final IStatusAvailabilityRepository statusAvailabilityRepository;
+    @Override
     public AvailabilityDTO getAvailability(Long userId, Long semesterId) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new GenericAppException(HttpStatus.NOT_FOUND, "Usuario no encontrado"));
@@ -62,35 +63,36 @@ public class AvailabilityServiceImpl {
 
         return true;
     }
-
-    private User getUserById(Long userId) {
+    @Override
+    public User getUserById(Long userId) {
         return userRepository.findById(userId)
                 .orElseThrow(() -> new GenericAppException(HttpStatus.NOT_FOUND, "Usuario no encontrado"));
     }
-
-    private Semester getSemesterById(Long semesterId) {
+    @Override
+    public Semester getSemesterById(Long semesterId) {
         return semesterRepository.findById(semesterId)
                 .orElseThrow(() -> new GenericAppException(HttpStatus.NOT_FOUND, "Semestre no encontrado"));
     }
-
-    private StatusAvailability getDefaultStatus() {
+    @Override
+    public StatusAvailability getDefaultStatus() {
         return statusAvailabilityRepository.findById(1L)
                 .orElseThrow(() -> new GenericAppException(HttpStatus.NOT_FOUND, "Estado por defecto no encontrado"));
     }
-
-    private List<Availability> getCurrentAvailability(User user, Semester semester) {
+    @Override
+    public List<Availability> getCurrentAvailability(User user, Semester semester) {
         return availabilityRepository.findByUserAndSemester(user, semester)
                 .orElse(new ArrayList<>());
     }
-
-    private Map<String, AvailabilityBlockDTO> buildIncomingAvailabilityMap(AvailabilityDTO dto) {
+    @Override
+    public Map<String, AvailabilityBlockDTO> buildIncomingAvailabilityMap(AvailabilityDTO dto) {
         return dto.getDisponibilidad().entrySet().stream()
                 .flatMap(e -> e.getValue().stream()
                         .map(block -> Map.entry(e.getKey() + "-" + block.getHour(), block)))
                 .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
     }
-
-    private void deleteObsoleteAvailability(List<Availability> currentAvailability,
+    @Override
+    @Transactional
+    public void deleteObsoleteAvailability(List<Availability> currentAvailability,
                                             Map<String, AvailabilityBlockDTO> incomingMap, Long userRequestId) {
         User userRequest=this.getUserById(userRequestId);
         List<UserRol> userRolesRequest = userRoleRepository.findAllByUser(userRequest)
@@ -118,8 +120,9 @@ public class AvailabilityServiceImpl {
             }
         }
     }
-
-    private void saveNewAvailabilityBlocks(AvailabilityDTO dto, User user, Semester semester,
+    @Override
+    @Transactional
+    public void saveNewAvailabilityBlocks(AvailabilityDTO dto, User user, Semester semester,
                                            Map<String, AvailabilityBlockDTO> incomingMap,
                                            StatusAvailability defaultStatus) {
 
