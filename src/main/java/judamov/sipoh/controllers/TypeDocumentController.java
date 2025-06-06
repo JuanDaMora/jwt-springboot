@@ -30,6 +30,10 @@ public class TypeDocumentController {
 
         return ResponseEntity.ok(typeDocumentService.getAllSiglas());
     }
+    @PutMapping("/{id}")
+    public ResponseEntity<Boolean> updateTypeDocument(@PathVariable Long id,@RequestBody TypeDocumentDTO typeDocumentDTO){
+        return  ResponseEntity.ok(typeDocumentService.updateTypeDocument(id,typeDocumentDTO));
+    }
 
 
 }

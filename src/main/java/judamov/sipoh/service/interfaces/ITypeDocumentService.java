@@ -5,7 +5,9 @@ import judamov.sipoh.entity.TypeDocument;
 
 import java.util.List;
 public interface ITypeDocumentService {
-    public List<TypeDocumentDTO> getAllTypeDocuments();
+    List<TypeDocumentDTO> getAllTypeDocuments();
 
-    public Boolean createTypeDocument(TypeDocumentDTO typeDocumentDTO);
+    Boolean createTypeDocument(TypeDocumentDTO typeDocumentDTO);
+
+    Boolean updateTypeDocument(Long id, TypeDocumentDTO typeDocumentDTO);
 }

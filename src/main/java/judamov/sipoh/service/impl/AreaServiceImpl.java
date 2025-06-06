@@ -24,6 +24,7 @@ public class AreaServiceImpl  implements IAreaService {
                 .toList();
     }
 
+    @Transactional
     @Override
     public Boolean createArea(AreaDTO areaDTO) {
         areaRepository.findOneByDescription(areaDTO.getDescription().toUpperCase())
@@ -41,6 +42,7 @@ public class AreaServiceImpl  implements IAreaService {
         return true;
     }
     @Transactional
+    @Override
     public Boolean updateArea(Long idArea, AreaDTO areaDTO){
         Area area=areaRepository.findOneById(idArea)
                 .orElseThrow(
