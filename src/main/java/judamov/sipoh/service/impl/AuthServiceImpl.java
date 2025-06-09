@@ -31,6 +31,12 @@ public class AuthServiceImpl {
     private final UserRolServiceImpl userRolService;
 
 
+
+    /**
+     * Obtiene todos los usuarios del sistema con sus últimos accesos y áreas asociadas.
+     *
+     * @return lista de objetos {@link UserDTO}
+     */
     public List<UserDTO> getAllUsers() {
         List<UserDTO> userDTOList= userRepository.findAll()
                 .stream()
@@ -40,21 +46,21 @@ public class AuthServiceImpl {
             // lastLogin
             accessControlRepository.findByUserId(userDTO.getId())
                     .ifPresent(accessControl -> userDTO.setLastLogin(accessControl.getLastLogin()));
-
             // idsAreas
             List<Long> areaIds = userAreaRepository.findByUserId(userDTO.getId()).stream()
                     .map(userArea -> userArea.getArea().getId())
                     .toList();
-
-
-
             userDTO.setIdsAreas(areaIds);
         }
-
-
         return userDTOList;
     }
 
+    /**
+     * Autentica al usuario y genera un token JWT. También actualiza el último acceso y el token hash.
+     *
+     * @param request contiene documento y contraseña
+     * @return respuesta con token y bandera de forzar cambio de contraseña
+     */
     public AuthResponse login(LoginRequest request) {
         User user = userRepository.findOneByDocumento(request.getDocumento())
                 .orElseThrow(() -> new GenericAppException(HttpStatus.NOT_FOUND,
@@ -89,7 +95,12 @@ public class AuthServiceImpl {
                 .forcePasswordReset(forcePasswordReset)
                 .build();
     }
-
+    /**
+     * Registra un nuevo usuario con sus roles, áreas y control de acceso inicial.
+     *
+     * @param request datos del usuario a registrar
+     * @return respuesta con la contraseña (sin encriptar)
+     */
     public RegisterResponse register(RegisterRequest request) {
         TypeDocument typeDocument = typeDocumentRepository.findOneById(request.getIdTipoDocumento())
                 .orElseThrow(() -> new GenericAppException(HttpStatus.BAD_REQUEST,
@@ -156,7 +167,12 @@ public class AuthServiceImpl {
                 .password(request.getPassword())
                 .build();
     }
-
+    /**
+     * Cambia la contraseña de un usuario autenticado.
+     *
+     * @param request contiene documento, contraseña actual y nueva contraseña
+     * @return respuesta con el nuevo token
+     */
     public ChangePasswordResponse changePassword(ChangePasswordDTO request) {
         User user = userRepository.findOneByDocumento(request.getDocumento())
                 .orElseThrow(() -> new GenericAppException(HttpStatus.NOT_FOUND,
@@ -179,44 +195,86 @@ public class AuthServiceImpl {
                 .token(token)
                 .build();
     }
-    public UserDTO getUserById(Long id){
+    /**
+     * Retorna los datos de un usuario por ID solo si tiene un rol permitido.
+     *
+     * @param id ID del usuario a consultar
+     * @return objeto {@link UserDTO} con datos, áreas y login
+     */
+    public UserDTO getUserById(Long id, Long userId) {
+        User requester = userRepository.findOneById(userId)
+                .orElseThrow(() -> new GenericAppException(HttpStatus.UNAUTHORIZED, "Usuario no autenticado"));
+
+        if (!userRolService.hasAdminPrivileges(requester)) {
+            throw new GenericAppException(HttpStatus.UNAUTHORIZED, "No autorizado para consultar esta información");
+        }
+
         User user = userRepository.findOneById(id)
                 .orElseThrow(() -> new GenericAppException(HttpStatus.NOT_FOUND, "Usuario no encontrado"));
 
         UserDTO userDTO = UserMapper.userToUserDTO(user);
 
-        // Agregar lastLogin
-        accessControlRepository.findByUserId(user.getId())
-                .ifPresent(accessControl -> userDTO.setLastLogin(accessControl.getLastLogin()));
+        accessControlRepository.findByUserId(id)
+                .ifPresent(ac -> userDTO.setLastLogin(ac.getLastLogin()));
 
-        // Agregar lista de áreas
-        List<Long> areaIds = userAreaRepository.findByUserId(userDTO.getId()).stream()
+        List<Long> areaIds = userAreaRepository.findByUserId(id).stream()
                 .map(userArea -> userArea.getArea().getId())
                 .toList();
+        userDTO.setIdsAreas(areaIds);
 
+        return userDTO;
+    }
 
+    /**
+     * Retorna los datos del usuario autenticado sin validaciones de rol.
+     *
+     * @param userId ID del usuario autenticado
+     * @return objeto {@link UserDTO} con datos personales, login y áreas
+     */
+    public UserDTO getOwnUserData(Long userId) {
+        User user = userRepository.findOneById(userId)
+                .orElseThrow(() -> new GenericAppException(HttpStatus.NOT_FOUND, "Usuario no encontrado"));
+
+        UserDTO userDTO = UserMapper.userToUserDTO(user);
+
+        accessControlRepository.findByUserId(userId)
+                .ifPresent(ac -> userDTO.setLastLogin(ac.getLastLogin()));
+
+        List<Long> areaIds = userAreaRepository.findByUserId(userId).stream()
+                .map(userArea -> userArea.getArea().getId())
+                .toList();
         userDTO.setIdsAreas(areaIds);
 
         return userDTO;
     }
 
 
-    public Boolean updateUser(Long id, UserDTO userDTO){
+
+    /**
+     * Actualiza un usuario si tiene uno de los roles permitidos.
+     *
+     * @param id del usuario a actualizar
+     * @param userDTO nuevos datos
+     * @return true si fue actualizado correctamente
+     */
+    public Boolean updateUser(Long id, UserDTO userDTO) {
         User user = userRepository.findOneById(id)
-                .orElseThrow(()-> new GenericAppException(HttpStatus.NOT_FOUND, "Usuario no encontrado"));
-        user= UserMapper.userDTOtoUser(userDTO,user.getTypeDocument());
-        user.setId(id);
-        List<Role> roleList= userRolService.getRolListFromUser(user);
-        for(Role rol : roleList) {
-            if(rol.getName().equals("DIRECTOR DE ESCUELA") || rol.getName().equals("COORDINADOR ACADEMICO")){
-                try{
-                    userRepository.save(user);
-                }catch (Exception e){
-                    throw new GenericAppException(HttpStatus.INTERNAL_SERVER_ERROR,
-                            "Error ctualizando el usuario");
-                }
-            }
+                .orElseThrow(() -> new GenericAppException(HttpStatus.NOT_FOUND, "Usuario no encontrado"));
+
+        if (!userRolService.hasAdminPrivileges(user)) {
+            throw new GenericAppException(HttpStatus.UNAUTHORIZED, "No autorizado para actualizar este usuario");
         }
+
+        user = UserMapper.userDTOtoUser(userDTO, user.getTypeDocument());
+        user.setId(id);
+
+        try {
+            userRepository.save(user);
+        } catch (Exception e) {
+            throw new GenericAppException(HttpStatus.INTERNAL_SERVER_ERROR,
+                    "Error actualizando el usuario");
+        }
+
         return true;
     }
 }

@@ -9,6 +9,9 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+/**
+ * Controlador para endpoints privados relacionados con autenticación y gestión de usuarios.
+ */
 @RestController
 @RequestMapping("/api/v1")
 @RequiredArgsConstructor
@@ -16,18 +19,56 @@ public class AuthPrivateController {
 
     private final AuthServiceImpl authService;
 
+    /**
+     * Obtiene los datos del usuario autenticado usando su ID proporcionado en el header.
+     *
+     * @param userId ID del usuario (enviado en el header "user-id")
+     * @return datos del usuario en formato {@link UserDTO}
+     */
+    @GetMapping("/users/me")
+    public ResponseEntity<UserDTO> getMyData(@RequestHeader String userId) {
+        return ResponseEntity.ok(authService.getOwnUserData(Long.parseLong(userId)));
+    }
+
+    /**
+     * Retorna todos los usuarios del sistema con sus datos básicos, áreas asociadas y último acceso.
+     *
+     * @return lista de usuarios {@link UserDTO}
+     */
     @GetMapping("/users")
     public ResponseEntity<List<UserDTO>> getAllUsers(){
         return ResponseEntity.ok(authService.getAllUsers());
     }
+
+    /**
+     * Obtiene la información detallada de un usuario específico, solo si tiene un rol autorizado.
+     *
+     * @param id ID del usuario a consultar
+     * @return datos del usuario en formato {@link UserDTO}
+     */
     @GetMapping("/users/{id}")
-    public ResponseEntity<UserDTO> getUserById(@PathVariable Long id){
-        return ResponseEntity.ok(authService.getUserById(id));
+    public ResponseEntity<UserDTO> getUserById(@PathVariable Long id, @RequestHeader Long userId){
+        return ResponseEntity.ok(authService.getUserById(id,userId));
     }
+
+    /**
+     * Cambia la contraseña de un usuario autenticado, validando la contraseña actual.
+     *
+     * @param resetpassword objeto con documento, contraseña actual y nueva contraseña
+     * @return respuesta con el nuevo token generado {@link ChangePasswordResponse}
+     */
     @PostMapping("/changePassword")
     public ResponseEntity<ChangePasswordResponse> changePassword(@RequestBody ChangePasswordDTO resetpassword) {
         return ResponseEntity.ok(authService.changePassword(resetpassword));
     }
+
+    /**
+     * Actualiza los datos de un usuario, siempre y cuando tenga un rol autorizado para ello.
+     *
+     * @param id ID del usuario a actualizar
+     * @param userDTO datos nuevos del usuario
+     * @return true si la operación fue exitosa
+     */
     @PutMapping("/{id}")
     public ResponseEntity<Boolean> updateUser(@PathVariable Long id, @RequestBody UserDTO userDTO){
         return ResponseEntity.ok(authService.updateUser(id, userDTO));
