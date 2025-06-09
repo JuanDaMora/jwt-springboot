@@ -26,4 +26,5 @@ public class UserDTO {
     private LocalDateTime createAt;
     private LocalDateTime updatedAt;
     private Date lastLogin;
+    private List<Long> idsAreas;
 }

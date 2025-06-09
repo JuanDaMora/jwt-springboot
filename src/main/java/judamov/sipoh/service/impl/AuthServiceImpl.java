@@ -37,9 +37,21 @@ public class AuthServiceImpl {
                 .map(UserMapper::userToUserDTO) // usar el mapper aquí
                 .collect(Collectors.toList());
         for (UserDTO userDTO : userDTOList) {
+            // lastLogin
             accessControlRepository.findByUserId(userDTO.getId())
                     .ifPresent(accessControl -> userDTO.setLastLogin(accessControl.getLastLogin()));
+
+            // idsAreas
+            List<Long> areaIds = userAreaRepository.findByUserId(userDTO.getId()).stream()
+                    .map(userArea -> userArea.getArea().getId())
+                    .toList();
+
+
+
+            userDTO.setIdsAreas(areaIds);
         }
+
+
         return userDTOList;
     }
 
@@ -169,13 +181,25 @@ public class AuthServiceImpl {
     }
     public UserDTO getUserById(Long id){
         User user = userRepository.findOneById(id)
-                .orElseThrow(()-> new GenericAppException(HttpStatus.NOT_FOUND, "Usuario no encontrado"));
-        if(user==null){
-            throw new GenericAppException(HttpStatus.NOT_FOUND, "Usuario no encontrado");
-        }
-        UserDTO userDTO= UserMapper.userToUserDTO(user);
+                .orElseThrow(() -> new GenericAppException(HttpStatus.NOT_FOUND, "Usuario no encontrado"));
+
+        UserDTO userDTO = UserMapper.userToUserDTO(user);
+
+        // Agregar lastLogin
+        accessControlRepository.findByUserId(user.getId())
+                .ifPresent(accessControl -> userDTO.setLastLogin(accessControl.getLastLogin()));
+
+        // Agregar lista de áreas
+        List<Long> areaIds = userAreaRepository.findByUserId(userDTO.getId()).stream()
+                .map(userArea -> userArea.getArea().getId())
+                .toList();
+
+
+        userDTO.setIdsAreas(areaIds);
+
         return userDTO;
     }
+
 
     public Boolean updateUser(Long id, UserDTO userDTO){
         User user = userRepository.findOneById(id)
