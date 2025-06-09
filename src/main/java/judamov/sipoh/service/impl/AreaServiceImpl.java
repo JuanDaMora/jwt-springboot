@@ -28,7 +28,9 @@ public class AreaServiceImpl  implements IAreaService {
     @Override
     public Boolean createArea(AreaDTO areaDTO) {
         areaRepository.findOneByDescription(areaDTO.getDescription().toUpperCase())
-                .orElseThrow(()-> new GenericAppException(HttpStatus.NOT_FOUND, "El area ya existe"));
+                .ifPresent(u -> {
+                    throw new GenericAppException(HttpStatus.BAD_REQUEST, "El area ya existe");
+                });
 
         Area newArea = Area.builder()
                 .description(areaDTO.getDescription().toUpperCase())
