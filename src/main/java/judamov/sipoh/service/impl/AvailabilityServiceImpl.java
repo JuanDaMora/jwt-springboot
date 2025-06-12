@@ -224,4 +224,22 @@ public class AvailabilityServiceImpl implements IAvailabilityService {
             }
         }
     }
+    @Transactional
+    public Boolean updateAvailabilityStatus(Long availabilityId, Long newStatusId) {
+        // Buscar el bloque de disponibilidad por ID
+        Availability availability = availabilityRepository.findById(availabilityId)
+                .orElseThrow(() -> new GenericAppException(HttpStatus.NOT_FOUND,
+                        "Disponibilidad no encontrada con ID: " + availabilityId));
+
+        // Buscar el nuevo estado por ID
+        StatusAvailability newStatus = statusAvailabilityRepository.findById(newStatusId)
+                .orElseThrow(() -> new GenericAppException(HttpStatus.NOT_FOUND,
+                        "Estado no encontrado con ID: " + newStatusId));
+
+        // Actualizar el estado y guardar
+        availability.setStatusAvailability(newStatus);
+        availabilityRepository.save(availability);
+        return true;
+    }
+
 }
