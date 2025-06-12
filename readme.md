@@ -42,4 +42,5 @@ docker build -t sipoh-app .
 docker compose down -v
 
 docker compose up --build
+
 ```

@@ -50,7 +50,7 @@ public class AuthServiceImpl {
             List<Long> areaIds = userAreaRepository.findByUserId(userDTO.getId()).stream()
                     .map(userArea -> userArea.getArea().getId())
                     .toList();
-            userDTO.setIdsAreas(areaIds);
+            userDTO.setIdAreas(areaIds);
         }
         return userDTOList;
     }
@@ -220,7 +220,7 @@ public class AuthServiceImpl {
         List<Long> areaIds = userAreaRepository.findByUserId(id).stream()
                 .map(userArea -> userArea.getArea().getId())
                 .toList();
-        userDTO.setIdsAreas(areaIds);
+        userDTO.setIdAreas(areaIds);
 
         return userDTO;
     }
@@ -243,7 +243,7 @@ public class AuthServiceImpl {
         List<Long> areaIds = userAreaRepository.findByUserId(userId).stream()
                 .map(userArea -> userArea.getArea().getId())
                 .toList();
-        userDTO.setIdsAreas(areaIds);
+        userDTO.setIdAreas(areaIds);
 
         return userDTO;
     }

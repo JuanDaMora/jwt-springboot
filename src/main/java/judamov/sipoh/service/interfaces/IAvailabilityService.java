@@ -2,6 +2,7 @@ package judamov.sipoh.service.interfaces;
 
 import judamov.sipoh.dto.AvailabilityBlockDTO;
 import judamov.sipoh.dto.AvailabilityDTO;
+import judamov.sipoh.dto.GlobalAvabilityDTO;
 import judamov.sipoh.entity.Availability;
 import judamov.sipoh.entity.Semester;
 import judamov.sipoh.entity.StatusAvailability;
@@ -11,7 +12,9 @@ import java.util.List;
 import java.util.Map;
 
 public interface IAvailabilityService {
-    AvailabilityDTO getAvailability(Long userId, Long semesterId);
+    GlobalAvabilityDTO getAvailabilityDTO (Long userId, Long docentId, Long semesterId);
+    List<GlobalAvabilityDTO> getListGlobalAvailability(Long semesterId, Long userId);
+    AvailabilityDTO getAvailabilityByIdDocent(Long userId, Long semesterId);
     Boolean createAvailability(Long userId, Long semesterId, AvailabilityDTO dto);
     User getUserById(Long userId);
     Semester getSemesterById(Long semesterId);

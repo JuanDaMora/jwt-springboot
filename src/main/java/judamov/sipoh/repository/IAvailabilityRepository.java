@@ -15,6 +15,8 @@ import java.util.Optional;
 public interface IAvailabilityRepository extends JpaRepository<Availability, Long> {
     Optional<List<Availability>> findByUserAndSemester(User user, Semester semester);
 
+    Optional<List<Availability>> findBySemester(Semester semester);
+
     void deleteByUserAndSemester(User user, Semester semester);
 
     boolean existsByUserAndSemesterAndDayOfWeekAndStartTime(
