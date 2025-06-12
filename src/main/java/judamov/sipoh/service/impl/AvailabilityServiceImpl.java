@@ -78,6 +78,7 @@ public class AvailabilityServiceImpl implements IAvailabilityService {
                 .collect(Collectors.groupingBy(
                         Availability::getDayOfWeek,
                         Collectors.mapping(a -> AvailabilityBlockDTO.builder()
+                                .id(a.getId())
                                 .hour(a.getStartTime().getHour())
                                 .statusId(a.getStatusAvailability().getId())
                                 .statusDescription(a.getStatusAvailability().getDescription())
@@ -121,6 +122,8 @@ public class AvailabilityServiceImpl implements IAvailabilityService {
                         Availability::getDayOfWeek,
                         Collectors.mapping(a -> {
                             AvailabilityBlockDTO dto = new AvailabilityBlockDTO();
+                            dto.setId(a.getId());
+                            dto.setHour(a.getStartTime().getHour());
                             dto.setStatusId(a.getStatusAvailability().getId());
                             dto.setStatusDescription(a.getStatusAvailability().getDescription());
                             return dto;
