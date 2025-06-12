@@ -2,27 +2,54 @@ package judamov.sipoh.service.impl;
 
 import jakarta.transaction.Transactional;
 import judamov.sipoh.dto.AreaDTO;
+import judamov.sipoh.dto.AreaSubjectDTO;
+import judamov.sipoh.dto.SubjectDTO;
 import judamov.sipoh.entity.Area;
+import judamov.sipoh.entity.Subject;
 import judamov.sipoh.exceptions.GenericAppException;
 import judamov.sipoh.repository.IAreaRepository;
+import judamov.sipoh.repository.ISubjectRepository;
 import judamov.sipoh.service.interfaces.IAreaService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+
 @Service
 @RequiredArgsConstructor
 public class AreaServiceImpl  implements IAreaService {
 
     private final IAreaRepository areaRepository;
+    private final ISubjectRepository subjectRepository;
     @Override
-    public List<AreaDTO> getAllAreas() {
-        return areaRepository.findAll()
-                .stream()
-                .map(area -> new AreaDTO(area.getId(),area.getDescription()))
+    public List<AreaSubjectDTO> getAllAreas() {
+        // Obtener todas las materias con sus áreas asociadas
+        List<Subject> allSubjects = subjectRepository.findAll();
+
+        // Agrupar materias por área
+        Map<Area, List<Subject>> groupedByArea = allSubjects.stream()
+                .collect(Collectors.groupingBy(Subject::getArea));
+
+        // Mapear a DTOs
+        return groupedByArea.entrySet().stream()
+                .map(entry -> {
+                    Area area = entry.getKey();
+                    List<SubjectDTO> subjectDTOs = entry.getValue().stream()
+                            .map(subject -> new SubjectDTO(subject.getId(), subject.getName()))
+                            .toList();
+
+                    return AreaSubjectDTO.builder()
+                            .id(area.getId())
+                            .description(area.getDescription())
+                            .subjectList(subjectDTOs)
+                            .build();
+                })
                 .toList();
     }
+
 
     @Transactional
     @Override

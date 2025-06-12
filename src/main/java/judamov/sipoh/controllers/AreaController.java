@@ -1,6 +1,7 @@
 package judamov.sipoh.controllers;
 
 import judamov.sipoh.dto.AreaDTO;
+import judamov.sipoh.dto.AreaSubjectDTO;
 import judamov.sipoh.service.impl.AreaServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -16,7 +17,7 @@ public class AreaController {
     private final AreaServiceImpl areaService;
 
     @GetMapping
-    public ResponseEntity<List<AreaDTO>> getAllAreas(){
+    public ResponseEntity<List<AreaSubjectDTO>> getAllAreas(){
         return ResponseEntity.ok(areaService.getAllAreas());
     }
 
