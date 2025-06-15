@@ -9,4 +9,5 @@ public interface ISemesterService {
     List<Semester> getAllSemesters();
     Boolean addSemester(SemesterDTO semesterDTO);
     SemesterDTO updateSemester(SemesterDTO semesterDTO);
+    Boolean changeAvailability(Boolean newAvailability, Long semesterId, Long userId);
 }

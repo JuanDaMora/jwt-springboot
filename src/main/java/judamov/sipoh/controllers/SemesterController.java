@@ -29,4 +29,12 @@ public class SemesterController {
     public ResponseEntity<SemesterDTO> updateSemester(@RequestBody SemesterDTO semesterDTO){
         return ResponseEntity.ok(semesterService.updateSemester(semesterDTO));
     }
+
+    @PutMapping("/availability")
+    public ResponseEntity<Boolean> changeAvailability(
+            @RequestParam Boolean newAvailability,
+            @RequestParam Long semesterId,
+            @RequestHeader Long userId){
+        return ResponseEntity.ok(semesterService.changeAvailability(newAvailability,semesterId,userId));
+    }
 }

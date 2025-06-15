@@ -6,6 +6,8 @@ import judamov.sipoh.entity.Semester;
 import judamov.sipoh.entity.User;
 import judamov.sipoh.exceptions.GenericAppException;
 import judamov.sipoh.repository.ISemesterRepository;
+import judamov.sipoh.repository.IUserRepository;
+import judamov.sipoh.repository.IUserRoleRepository;
 import judamov.sipoh.service.interfaces.ISemesterService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -17,6 +19,8 @@ import java.util.List;
 @RequiredArgsConstructor
 public class SemesterServiceImpl implements ISemesterService {
     private final ISemesterRepository semesterRepository;
+    private final IUserRepository userRepository;
+    private final UserRolServiceImpl userRolService;
     @Override
     public List<Semester> getAllSemesters(){
         return semesterRepository.findAll();
@@ -47,5 +51,30 @@ public class SemesterServiceImpl implements ISemesterService {
 
         return new SemesterDTO(saved);
 
+    }
+    @Override
+    @Transactional
+    public Boolean changeAvailability(Boolean newAvailability,Long semesterId,Long userId){
+        validateAdminAccess(userId);
+        Semester semester= semesterRepository.findOneById(semesterId)
+                .orElseThrow(() -> new GenericAppException(HttpStatus.NOT_FOUND, "Semestre no encontrado"));
+        if(semester.getAvailability()!=newAvailability){
+            semester.setAvailability(newAvailability);
+            semesterRepository.save(semester);
+        }
+        return true;
+    }
+    private void validateAdminAccess(Long userId) {
+        User user = getUserById(userId);
+        System.out.println("///////// "+userRolService.hasAdminPrivileges(user));
+        if (!userRolService.hasAdminPrivileges(user)) {
+            System.out.println("///////// "+userRolService.hasAdminPrivileges(user));
+            throw new GenericAppException(HttpStatus.UNAUTHORIZED, "No autorizado para esta solicitud");
+        }
+    }
+
+    public User getUserById(Long userId) {
+        return userRepository.findById(userId)
+                .orElseThrow(() -> new GenericAppException(HttpStatus.NOT_FOUND, "Usuario no encontrado"));
     }
 }

@@ -31,6 +31,8 @@ public class Semester {
     private LocalDate startDate;
     @Column(nullable = false)
     private LocalDate endDate;
+    @Column(nullable = false)
+    private Boolean availability;
     @CreationTimestamp
     @Column(name = "created_at", updatable = false)
     private LocalDateTime createdAt;
@@ -42,6 +44,7 @@ public class Semester {
         this.description = semesterDTO.getDescription();
         this.startDate = semesterDTO.getStartDate();
         this.endDate = semesterDTO.getEndDate();
+        this.availability= semesterDTO.getAvailability();
     }
 
     public void updateFromDto(SemesterDTO dto) {

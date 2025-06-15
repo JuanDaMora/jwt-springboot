@@ -19,6 +19,7 @@ public class SemesterDTO {
     String description;
     LocalDate startDate;
     LocalDate endDate;
+    Boolean availability;
 
     public SemesterDTO(Semester semester) {
         this.id = semester.getId();
