@@ -66,9 +66,7 @@ public class SemesterServiceImpl implements ISemesterService {
     }
     private void validateAdminAccess(Long userId) {
         User user = getUserById(userId);
-        System.out.println("///////// "+userRolService.hasAdminPrivileges(user));
         if (!userRolService.hasAdminPrivileges(user)) {
-            System.out.println("///////// "+userRolService.hasAdminPrivileges(user));
             throw new GenericAppException(HttpStatus.UNAUTHORIZED, "No autorizado para esta solicitud");
         }
     }
