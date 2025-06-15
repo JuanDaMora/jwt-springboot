@@ -28,7 +28,7 @@ public class TypeDocumentServiceImpl  implements ITypeDocumentService {
         List<TypeDocument> typeDocumentList= typeDocumentRepository.findAll();
         return typeDocumentRepository.findAll()
                 .stream()
-                .map(typeDocument -> new TypeDocumentDTO(typeDocument.getDescription(),typeDocument.getSigla().getSigla(), typeDocument.getSigla().getId()))
+                .map(typeDocument -> new TypeDocumentDTO(typeDocument.getId(),typeDocument.getDescription(), typeDocument.getSigla().getId()))
                 .toList();
     }
     public List<SiglaDTO> getAllSiglas(){
@@ -48,26 +48,28 @@ public class TypeDocumentServiceImpl  implements ITypeDocumentService {
                     .orElseThrow(() -> new GenericAppException(HttpStatus.NOT_FOUND,
                             "La sigla con el id: " + typeDocumentDTO.getIdSigla() + " no existe"));
             newTypeDocument.setSigla(sigla);
-        } else if (typeDocumentDTO.getSigla() != null) {
-
-            siglaRepository.findOneBySigla(typeDocumentDTO.getSigla().toUpperCase()).ifPresent(existing -> {
-                throw new GenericAppException(HttpStatus.BAD_REQUEST,
-                        "Ya existe una sigla registrada como: " + typeDocumentDTO.getSigla().toUpperCase());
-            });
-            try {
-                String siglaTexto = typeDocumentDTO.getSigla().toUpperCase();
-                Sigla sigla = siglaRepository.findOneBySigla(siglaTexto)
-                        .orElseGet(() -> {
-                            Sigla nuevaSigla = Sigla.builder().sigla(siglaTexto).build();
-                            return siglaRepository.save(nuevaSigla);
-                        });
-
-                newTypeDocument.setSigla(sigla);
-            } catch (Exception e) {
-                throw new GenericAppException(HttpStatus.INTERNAL_SERVER_ERROR,
-                        "Error inesperado al guardar el Tipo de Documento y Sigla nueva");
-            }
-        } else {
+        }
+//        else if (typeDocumentDTO.getSigla() != null) {
+//
+//            siglaRepository.findOneBySigla(typeDocumentDTO.getSigla().toUpperCase()).ifPresent(existing -> {
+//                throw new GenericAppException(HttpStatus.BAD_REQUEST,
+//                        "Ya existe una sigla registrada como: " + typeDocumentDTO.getSigla().toUpperCase());
+//            });
+//            try {
+//                String siglaTexto = typeDocumentDTO.getSigla().toUpperCase();
+//                Sigla sigla = siglaRepository.findOneBySigla(siglaTexto)
+//                        .orElseGet(() -> {
+//                            Sigla nuevaSigla = Sigla.builder().sigla(siglaTexto).build();
+//                            return siglaRepository.save(nuevaSigla);
+//                        });
+//
+//                newTypeDocument.setSigla(sigla);
+//            } catch (Exception e) {
+//                throw new GenericAppException(HttpStatus.INTERNAL_SERVER_ERROR,
+//                        "Error inesperado al guardar el Tipo de Documento y Sigla nueva");
+//            }
+//        }
+        else {
             throw new GenericAppException(HttpStatus.BAD_REQUEST,
                     "Es necesaria la sigla nueva o el id de una sigla ya existente");
         }

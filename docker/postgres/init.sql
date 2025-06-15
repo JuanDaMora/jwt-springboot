@@ -131,7 +131,8 @@ INSERT INTO roles (name) VALUES
                              ('PROFESOR')
     ON CONFLICT DO NOTHING;
 insert into sigla (sigla )values
-    ('C.C')
+    ('C.C'),
+    ('T.I')
     on conflict do nothing;
 
 INSERT INTO type_document (sigla_id,description) VALUES
