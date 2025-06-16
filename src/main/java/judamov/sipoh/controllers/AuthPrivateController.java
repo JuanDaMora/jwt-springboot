@@ -1,6 +1,7 @@
 package judamov.sipoh.controllers;
 import judamov.sipoh.dto.ChangePasswordDTO;
 import judamov.sipoh.dto.ChangePasswordResponse;
+import judamov.sipoh.dto.UserBasicUpdateDTO;
 import judamov.sipoh.dto.UserDTO;
 import judamov.sipoh.service.impl.AuthServiceImpl;
 import lombok.RequiredArgsConstructor;
@@ -69,8 +70,13 @@ public class AuthPrivateController {
      * @param userDTO datos nuevos del usuario
      * @return true si la operación fue exitosa
      */
-    @PutMapping("/{id}")
-    public ResponseEntity<Boolean> updateUser(@PathVariable Long id, @RequestBody UserDTO userDTO){
-        return ResponseEntity.ok(authService.updateUser(id, userDTO));
+    @PutMapping("/users/{id}")
+    public ResponseEntity<Boolean> updateUser(@PathVariable Long id, @RequestBody UserDTO userDTO, @RequestHeader Long userId){
+        return ResponseEntity.ok(authService.updateUser(userId, id, userDTO));
+    }
+
+    @PutMapping("/users/me")
+    public ResponseEntity<Boolean> updateUserMe(@RequestHeader Long userId,@RequestBody UserBasicUpdateDTO userDTO){
+        return ResponseEntity.ok(authService.updateUserMe(userId, userDTO));
     }
 }

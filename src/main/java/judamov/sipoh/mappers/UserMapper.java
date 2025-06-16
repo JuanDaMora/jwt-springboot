@@ -1,7 +1,7 @@
 package judamov.sipoh.mappers;
 
+import judamov.sipoh.dto.UserBasicUpdateDTO;
 import judamov.sipoh.dto.UserDTO;
-import judamov.sipoh.entity.Role;
 import judamov.sipoh.entity.TypeDocument;
 import judamov.sipoh.entity.User;
 
@@ -15,7 +15,7 @@ public class UserMapper {
         return UserDTO.builder()
                 .id(user.getId())
                 .email(user.getEmail())
-                .id_type_document(user.getTypeDocument().getId())
+                .idTipoDocumento(user.getTypeDocument().getId())
                 .documento(user.getDocumento())
                 .firstName(user.getFirstName())
                 .lastName(user.getLastName())
@@ -44,5 +44,15 @@ public class UserMapper {
                 .lastName(dto.getLastName())
                 .active(dto.getIsActive())
                 .build();
+    }
+
+    public static void updateUserBasicFields(User user, UserBasicUpdateDTO dto, TypeDocument typeDocument) {
+        if (user == null || dto == null || typeDocument == null) return;
+
+        user.setEmail(dto.getEmail());
+        user.setTypeDocument(typeDocument);
+        user.setDocumento(dto.getDocumento());
+        user.setFirstName(dto.getFirstName());
+        user.setLastName(dto.getLastName());
     }
 }

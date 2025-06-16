@@ -1,5 +1,6 @@
 package judamov.sipoh.service.impl;
 
+import jakarta.transaction.Transactional;
 import judamov.sipoh.dto.*;
 import judamov.sipoh.entity.*;
 import judamov.sipoh.exceptions.GenericAppException;
@@ -29,7 +30,7 @@ public class AuthServiceImpl {
     private final IAccessControlRepository accessControlRepository;
     private final IUserAreaRepository userAreaRepository;
     private final UserRolServiceImpl userRolService;
-
+    private final IAreaRepository areaRepository;
 
 
     /**
@@ -257,24 +258,87 @@ public class AuthServiceImpl {
      * @param userDTO nuevos datos
      * @return true si fue actualizado correctamente
      */
-    public Boolean updateUser(Long id, UserDTO userDTO) {
+    @Transactional
+    public Boolean updateUser(Long adminId, Long id, UserDTO userDTO) {
+        User admin = userRepository.findOneById(adminId)
+                .orElseThrow(() -> new GenericAppException(HttpStatus.NOT_FOUND, "Usuario no encontrado"));
+
         User user = userRepository.findOneById(id)
                 .orElseThrow(() -> new GenericAppException(HttpStatus.NOT_FOUND, "Usuario no encontrado"));
 
-        if (!userRolService.hasAdminPrivileges(user)) {
+        if (!userRolService.hasAdminPrivileges(admin)) {
             throw new GenericAppException(HttpStatus.UNAUTHORIZED, "No autorizado para actualizar este usuario");
         }
 
-        user = UserMapper.userDTOtoUser(userDTO, user.getTypeDocument());
-        user.setId(id);
+        // Actualizar campos básicos
+        TypeDocument typeDocument = typeDocumentRepository.findById(userDTO.getIdTipoDocumento())
+                .orElseThrow(() -> new GenericAppException(HttpStatus.NOT_FOUND, "Tipo de documento no encontrado"));
 
+        user.setEmail(userDTO.getEmail());
+        user.setDocumento(userDTO.getDocumento());
+        user.setFirstName(userDTO.getFirstName());
+        user.setLastName(userDTO.getLastName());
+        user.setTypeDocument(typeDocument);
+        user.setActive(userDTO.getIsActive());
+
+        // Actualizar roles si vienen en el DTO
+        if (userDTO.getIdsRoles() != null) {
+            List<Role> roles = roleRepository.findAllById(userDTO.getIdsRoles());
+            if (roles.size() != userDTO.getIdsRoles().size()) {
+                throw new GenericAppException(HttpStatus.BAD_REQUEST, "Uno o más roles no existen");
+            }
+
+            // Limpiar roles antiguos
+            user.getUserRoles().clear();
+
+            // Asignar nuevos
+            List<UserRol> nuevosRoles = roles.stream()
+                    .map(role -> new UserRol(null, user, role, null, null))
+                    .toList();
+
+            user.getUserRoles().addAll(nuevosRoles);
+        }
+
+        // Actualizar áreas si vienen en el DTO
+        if (userDTO.getIdAreas() != null) {
+            List<Area> areas = areaRepository.findAllById(userDTO.getIdAreas());
+            if (areas.size() != userDTO.getIdAreas().size()) {
+                throw new GenericAppException(HttpStatus.BAD_REQUEST, "Una o más áreas no existen");
+            }
+
+            // Limpiar áreas anteriores
+            user.getUserAreas().clear();
+
+            // Asignar nuevas
+            List<UserArea> nuevasAreas = areas.stream()
+                    .map(area -> new UserArea(null, user, area, null, null))
+                    .toList();
+
+            user.getUserAreas().addAll(nuevasAreas);
+        }
+
+        try {
+            userRepository.save(user);
+        } catch (Exception e) {
+            throw new GenericAppException(HttpStatus.INTERNAL_SERVER_ERROR, "Error actualizando el usuario");
+        }
+
+        return true;
+    }
+@Transactional
+    public Boolean updateUserMe (Long userId,UserBasicUpdateDTO userDTO){
+        User user = userRepository.findOneById(userId)
+                .orElseThrow(() -> new GenericAppException(HttpStatus.NOT_FOUND, "Usuario no encontrado"));
+
+        TypeDocument typeDoc = typeDocumentRepository.findById(userDTO.getIdTipoDocumento())
+                .orElseThrow(() -> new GenericAppException(HttpStatus.NOT_FOUND, "Tipo de documento no encontrado"));
+        UserMapper.updateUserBasicFields(user, userDTO, typeDoc);
         try {
             userRepository.save(user);
         } catch (Exception e) {
             throw new GenericAppException(HttpStatus.INTERNAL_SERVER_ERROR,
                     "Error actualizando el usuario");
         }
-
         return true;
     }
 }

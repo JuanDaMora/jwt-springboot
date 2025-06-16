@@ -10,6 +10,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import jakarta.transaction.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
@@ -44,6 +45,9 @@ public class User implements UserDetails {
     Boolean active;
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<UserRol> userRoles;
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<UserArea> userAreas = new ArrayList<>();
+
     @Column(name= "token_hash")
     private String tokenHash;
     @CreationTimestamp
