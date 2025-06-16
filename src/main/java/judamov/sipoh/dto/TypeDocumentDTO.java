@@ -10,6 +10,7 @@ import lombok.NoArgsConstructor;
 public class TypeDocumentDTO {
     private Long id;
     private String description;
+    private String sigla;
     private Long idSigla;
 
 }
