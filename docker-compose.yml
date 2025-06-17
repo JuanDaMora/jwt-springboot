@@ -1,34 +1,21 @@
-version: "3.8"
-
 services:
-  db:
-    image: postgres:15
-    container_name: sipoh-db
-    environment:
-      POSTGRES_USER: usuario
-      POSTGRES_PASSWORD: clave123
-      POSTGRES_DB: sigha
-    ports:
-      - "5433:5432"  # cambiamos el puerto externo para no chocar con tu PostgreSQL local
-    volumes:
-      - ./docker/postgres/init.sql:/docker-entrypoint-initdb.d/init.sql
-
   app:
-    image: sipoh-app
-    container_name: sipoh-app
-    depends_on:
-      - db
+    image: ${APP_IMAGE}
+    container_name: ${APP_CONTAINER_NAME}
     ports:
-      - "8080:8080"
+      - "${APP_PORT}:${APP_INTERNAL_PORT}"
     environment:
-      SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/sigha
-      SPRING_DATASOURCE_USERNAME: usuario
-      SPRING_DATASOURCE_PASSWORD: clave123
-      SPRING_JPA_HIBERNATE_DDL_AUTO: none
-      SPRING_JPA_SHOW_SQL: "true"
-      SPRING_JPA_PROPERTIES_HIBERNATE_DIALECT: org.hibernate.dialect.PostgreSQLDialect
-      SPRING_JPA_PROPERTIES_HIBERNATE_DEFAULT_SCHEMA: sigha
-      APP_SECRET_KEY: SIPOH2025THEBEST!
+      SPRING_DATASOURCE_URL: ${SPRING_DATASOURCE_URL}
+      SPRING_DATASOURCE_USERNAME: ${SPRING_DATASOURCE_USERNAME}
+      SPRING_DATASOURCE_PASSWORD: ${SPRING_DATASOURCE_PASSWORD}
+      SPRING_JPA_HIBERNATE_DDL_AUTO: ${SPRING_JPA_HIBERNATE_DDL_AUTO}
+      SPRING_JPA_SHOW_SQL: ${SPRING_JPA_SHOW_SQL}
+      SPRING_JPA_PROPERTIES_HIBERNATE_DIALECT: ${SPRING_JPA_PROPERTIES_HIBERNATE_DIALECT}
+      SPRING_JPA_PROPERTIES_HIBERNATE_DEFAULT_SCHEMA: ${SPRING_JPA_PROPERTIES_HIBERNATE_DEFAULT_SCHEMA}
+      APP_SECRET_KEY: ${APP_SECRET_KEY}
+    restart: unless-stopped
+networks:
+  default:
+    external: true
+    name: sigha-network
 
-volumes:
-  pg_data:
