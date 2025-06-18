@@ -1,8 +1,5 @@
 package judamov.sipoh.controllers;
-import judamov.sipoh.dto.ChangePasswordDTO;
-import judamov.sipoh.dto.ChangePasswordResponse;
-import judamov.sipoh.dto.UserBasicUpdateDTO;
-import judamov.sipoh.dto.UserDTO;
+import judamov.sipoh.dto.*;
 import judamov.sipoh.service.impl.AuthServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -78,5 +75,16 @@ public class AuthPrivateController {
     @PutMapping("/users/me")
     public ResponseEntity<Boolean> updateUserMe(@RequestHeader Long userId,@RequestBody UserBasicUpdateDTO userDTO){
         return ResponseEntity.ok(authService.updateUserMe(userId, userDTO));
+    }
+
+    /**
+     * Endpoint para registrar múltiples usuarios desde un archivo o fuente externa.
+     *
+     * @param userBulkDTOList lista de usuarios con datos básicos
+     * @return true si se registraron correctamente
+     */
+    @PostMapping("/users/bulk-register")
+    public ResponseEntity<Boolean> bulkRegisterUsers(@RequestBody List<BulkUserDTO> userBulkDTOList, @RequestHeader Long userId) {
+        return ResponseEntity.ok(authService.registerBulkUsers(userId,userBulkDTOList));
     }
 }

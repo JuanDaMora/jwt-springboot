@@ -13,6 +13,8 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.security.SecureRandom;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -20,17 +22,22 @@ import java.util.stream.Collectors;
 @Service
 @RequiredArgsConstructor
 public class AuthServiceImpl {
-
     private final IUserRepository userRepository;
     private final ITypeDocumentRepository typeDocumentRepository;
     private final IRoleRepository roleRepository;
     private final PasswordEncoder passwordEncoder;
+    private final IAccessControlRepository accessControlRepository;
     private final AuthenticationManager authenticationManager;
     private final JwtServiceImpl jwtServiceImpl;
-    private final IAccessControlRepository accessControlRepository;
     private final IUserAreaRepository userAreaRepository;
     private final UserRolServiceImpl userRolService;
     private final IAreaRepository areaRepository;
+    private final EmailServiceImpl emailService;
+
+
+    private static final String CHAR_POOL = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+    private static final int PASSWORD_LENGTH = 10;
+    private static final SecureRandom RANDOM = new SecureRandom();
 
 
     /**
@@ -340,5 +347,96 @@ public class AuthServiceImpl {
                     "Error actualizando el usuario");
         }
         return true;
+    }
+    @Transactional
+    public Boolean registerBulkUsers(Long userId, List<BulkUserDTO> usuariosDTO) {
+        User admin = userRepository.findOneById(userId)
+                .orElseThrow(() -> new GenericAppException(HttpStatus.UNAUTHORIZED, "Usuario no autenticado"));
+
+        if (!userRolService.hasAdminPrivileges(admin)) {
+            throw new GenericAppException(HttpStatus.UNAUTHORIZED, "No autorizado para actualizar este usuario");
+        }
+
+        for (BulkUserDTO dto : usuariosDTO) {
+            if (dto.getDocumento() == null || dto.getDocumento().isBlank()) continue;
+
+            String documentoLimpio = dto.getDocumento().replaceAll("[^\\d]", "");
+
+            if (userRepository.findOneByDocumento(documentoLimpio).isPresent()) continue;
+
+            Long tipoDocId = dto.getIdTipoDocumento() != null ? dto.getIdTipoDocumento() : 1L;
+            List<Long> idsRoles = (dto.getIdsRoles() != null && !dto.getIdsRoles().isEmpty())
+                    ? dto.getIdsRoles()
+                    : List.of(3L); // por defecto, rol docente
+
+            TypeDocument tipoDocumento = typeDocumentRepository.findById(tipoDocId)
+                    .orElseThrow(() -> new GenericAppException(HttpStatus.NOT_FOUND, "Tipo de documento no encontrado con id: " + tipoDocId));
+
+            List<Role> roles = roleRepository.findAllById(idsRoles);
+            if (roles.size() != idsRoles.size()) {
+                throw new GenericAppException(HttpStatus.BAD_REQUEST, "Uno o más roles no existen");
+            }
+
+            String plainPassword = generateRandomPassword();
+
+            User user = User.builder()
+                    .firstName(dto.getFirstName())
+                    .lastName(dto.getLastName())
+                    .email(dto.getCorreoInstitucional() != null && !dto.getCorreoInstitucional().isBlank()
+                            ? dto.getCorreoInstitucional()
+                            : dto.getCorreoPersonal())
+                    .documento(documentoLimpio)
+                    .password(passwordEncoder.encode(plainPassword))
+                    .typeDocument(tipoDocumento)
+                    .active(true)
+                    .build();
+
+            List<UserRol> userRoles = roles.stream()
+                    .map(role -> new UserRol(null, user, role, null, null))
+                    .toList();
+
+            user.setUserRoles(userRoles);
+
+            // Áreas (si vienen)
+            List<UserArea> userAreas = new ArrayList<>();
+            if (dto.getIdAreas() != null && !dto.getIdAreas().isEmpty()) {
+                List<Area> areas = areaRepository.findAllById(dto.getIdAreas());
+                if (areas.size() != dto.getIdAreas().size()) {
+                    throw new GenericAppException(HttpStatus.BAD_REQUEST, "Una o más áreas no existen");
+                }
+                userAreas = areas.stream()
+                        .map(area -> new UserArea(null, user, area, null, null))
+                        .toList();
+            }
+            user.setUserAreas(userAreas);
+
+            userRepository.save(user);
+
+            accessControlRepository.save(AccessControl.builder()
+                    .user(user)
+                    .lastLogin(new Date())
+                    .build());
+
+            EmailRequestDTO emailRequest = EmailRequestDTO.builder()
+                    .nombre(dto.getFirstName() + " " + dto.getLastName())
+                    .documento(documentoLimpio)
+                    .email(user.getEmail())
+                    .password(plainPassword)
+                    .fake(true)
+                    .build();
+
+            emailService.sendEmail(userId, emailRequest);
+        }
+
+        return true;
+    }
+
+    private String generateRandomPassword() {
+        StringBuilder password = new StringBuilder(PASSWORD_LENGTH);
+        for (int i = 0; i < PASSWORD_LENGTH; i++) {
+            int index = RANDOM.nextInt(CHAR_POOL.length());
+            password.append(CHAR_POOL.charAt(index));
+        }
+        return password.toString();
     }
 }

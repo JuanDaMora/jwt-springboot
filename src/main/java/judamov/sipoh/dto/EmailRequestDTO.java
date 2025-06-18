@@ -6,6 +6,7 @@ import lombok.*;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
 public class EmailRequestDTO {
     private String email;     // Correo del docente
     private String nombre;
