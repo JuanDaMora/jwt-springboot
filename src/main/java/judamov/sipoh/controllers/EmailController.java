@@ -18,7 +18,8 @@ public class EmailController {
 
     @PostMapping("/send-credentials")
     public ResponseEntity<Boolean> sendCredentials(
+            @RequestHeader Long userId,
             @RequestBody EmailRequestDTO request) {
-        return ResponseEntity.ok(emailService.sendEmail(request));
+        return ResponseEntity.ok(emailService.sendEmail(userId, request));
     }
 }
