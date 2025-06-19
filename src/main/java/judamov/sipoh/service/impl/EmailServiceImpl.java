@@ -32,13 +32,7 @@ public class EmailServiceImpl {
     private final IEmailRepository emailRepository;
     private final IUserRepository userRepository;
 
-    public Boolean sendEmail(Long userId, EmailRequestDTO emailRequestDTO) {
-        User user = getUserById(userId);
-
-        if (!userRolService.hasAdminPrivileges(user)) {
-            throw new GenericAppException(HttpStatus.UNAUTHORIZED, "No autorizado para enviar correos");
-        }
-
+    public Boolean sendEmail(EmailRequestDTO emailRequestDTO) {
         EmailTemplate template = emailRepository.findByCode("credenciales_acceso")
                 .orElseThrow(() -> new GenericAppException(HttpStatus.NOT_FOUND, "Plantilla 'credenciales_acceso' no encontrada."));
 

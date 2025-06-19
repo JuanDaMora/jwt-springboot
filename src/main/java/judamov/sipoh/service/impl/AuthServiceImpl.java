@@ -144,7 +144,20 @@ public class AuthServiceImpl {
         user.setUserRoles(userRoles);
 
         try {
-            userRepository.save(user);
+            User savedUser = userRepository.save(user); // Ya creado previamente
+
+            String fullName = savedUser.getFirstName() + " " + savedUser.getLastName();
+
+            EmailRequestDTO emailDTO = EmailRequestDTO.builder()
+                    .nombre(fullName)
+                    .documento(savedUser.getDocumento())
+                    .password(request.getPassword()) // asegúrate de conservar la password generada
+                    .email(request.getEmail()) // o correoInstitucional, según tu lógica
+                    .fake(false) // o true si quieres simular
+                    .build();
+
+            emailService.sendEmail(emailDTO);
+
         } catch (Exception e) {
             throw new GenericAppException(HttpStatus.INTERNAL_SERVER_ERROR, "Error inesperado al guardar el usuario");
         }
@@ -167,9 +180,11 @@ public class AuthServiceImpl {
                 .build();
         try {
             accessControlRepository.save(newAccessControl);
+
         } catch (Exception e) {
             throw new GenericAppException(HttpStatus.INTERNAL_SERVER_ERROR, "Error inesperado al guardar el access control");
         }
+
 
         return RegisterResponse.builder()
                 .password(request.getPassword())
@@ -425,7 +440,7 @@ public class AuthServiceImpl {
                     .fake(true)
                     .build();
 
-            emailService.sendEmail(userId, emailRequest);
+            emailService.sendEmail(emailRequest);
         }
 
         return true;
