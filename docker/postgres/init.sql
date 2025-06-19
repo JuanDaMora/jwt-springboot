@@ -1,6 +1,13 @@
 CREATE SCHEMA IF NOT EXISTS sigha;
 SET search_path TO sigha;
 
+CREATE TABLE email_templates (
+    id SERIAL PRIMARY KEY,
+    code VARCHAR(50) UNIQUE NOT NULL,
+    subject TEXT NOT NULL,
+    body TEXT NOT NULL
+);
+
 -- Tabla sigla
 CREATE TABLE IF NOT EXISTS sigla (
     id SERIAL PRIMARY KEY,
@@ -520,3 +527,71 @@ VALUES (
            NOW(), NOW()
        );
 
+INSERT INTO email_templates (code, subject, body) VALUES (
+'credenciales_acceso',
+'Bienvenido a SIGHA - Credenciales de acceso al sistema',
+'<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<style>
+body {
+font-family: Arial, sans-serif;
+background-color: #f7f9fc;
+color: #333;
+}
+.container {
+background-color: #ffffff;
+padding: 20px;
+margin: auto;
+border: 1px solid #e1e4e8;
+border-radius: 8px;
+max-width: 600px;
+}
+.header {
+text-align: center;
+margin-bottom: 20px;
+}
+.header h2 {
+color: #0056b3;
+}
+.footer {
+margin-top: 30px;
+font-size: 12px;
+color: #888;
+text-align: center;
+}
+.credentials {
+background-color: #f0f4f8;
+padding: 10px;
+border-radius: 5px;
+}
+</style>
+</head>
+<body>
+<div class="container">
+<div class="header">
+<h2>Bienvenido a SIGHA</h2>
+<p>Sistema de Gestión de Horarios Académicos</p>
+</div>
+
+<p>Estimado(a) <strong>{{nombre_destinatario}}</strong>,</p>
+
+<p>Le damos la bienvenida al sistema <strong>SIGHA</strong>. A continuación encontrará sus credenciales de acceso personalizadas:</p>
+
+<div class="credentials">
+<p><strong>Documento:</strong> {{documento_destinatario}}</p>
+<p><strong>Contraseña temporal:</strong> {{password_destinatario}}</p>
+</div>
+
+<p>Por favor, ingrese al sistema con estas credenciales y cambie su contraseña lo antes posible para garantizar la seguridad de su cuenta.</p>
+
+<p>Si tiene alguna duda o inconveniente, no dude en contactar al equipo de soporte técnico.</p>
+
+<div class="footer">
+<p>Este es un mensaje automático del sistema SIGHA.</p>
+</div>
+</div>
+</body>
+</html>'
+);
