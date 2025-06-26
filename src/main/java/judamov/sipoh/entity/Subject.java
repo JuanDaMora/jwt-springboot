@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
@@ -12,6 +13,7 @@ import java.time.LocalDateTime;
 
 @Data
 @Entity
+@Getter
 @Transactional
 @NoArgsConstructor
 @AllArgsConstructor
