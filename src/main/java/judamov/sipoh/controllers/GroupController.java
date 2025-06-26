@@ -4,7 +4,6 @@ import judamov.sipoh.dto.GroupCreateDTO;
 import judamov.sipoh.dto.GroupDTO;
 import judamov.sipoh.dto.GroupUpdateDTO;
 import judamov.sipoh.service.impl.GroupServiceImpl;
-import judamov.sipoh.service.interfaces.IGroupService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

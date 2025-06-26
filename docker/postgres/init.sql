@@ -1,7 +1,7 @@
 CREATE SCHEMA IF NOT EXISTS sigha;
 SET search_path TO sigha;
 
-CREATE TABLE group(
+CREATE TABLE "group"(
     id SERIAL PRIMARY KEY,
     id_semester INTEGER NOT NULL REFERENCES semester(id),
     id_subject INTEGER NOT NULL REFERENCES subject(id),
