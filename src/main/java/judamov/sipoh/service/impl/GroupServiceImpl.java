@@ -123,7 +123,7 @@ public class GroupServiceImpl implements IGroupService {
         User user = (dto.getIdUser() != null) ? getUserById(dto.getIdUser()) : null;
 
         Group group = new Group();
-        group.setName(dto.getName());
+        group.setCode(dto.getCode());
         group.setSemester(semester);
         group.setSubject(subject);
         group.setUser(user);
@@ -148,7 +148,7 @@ public class GroupServiceImpl implements IGroupService {
 
         User user = (dto.getIdUser() != null) ? getUserById(dto.getIdUser()) : null;
 
-        group.setName(dto.getName());
+        group.setCode(dto.getCode());
         group.setSemester(semester);
         group.setSubject(subject);
         group.setUser(user);

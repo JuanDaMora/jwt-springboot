@@ -13,7 +13,7 @@ public class GroupMapper {
 
         return GroupDTO.builder()
                 .id(group.getId())
-                .name(group.getName())
+                .code(group.getCode())
                 .idSemestre(group.getSemester() != null ? group.getSemester().getId() : null)
                 .idSubject(group.getSubject() != null ? group.getSubject().getId() : null)
                 .idUser(group.getUser() != null ? group.getUser().getId() : null)

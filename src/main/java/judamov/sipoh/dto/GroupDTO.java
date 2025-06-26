@@ -17,7 +17,7 @@ public class GroupDTO {
     private Long idUser;
     private Long idLevel;
     private String levelName;
-    private String name;
+    private String code;
     private DayOfWeekEnum dayOfWeek;
     private Integer hour;
 }

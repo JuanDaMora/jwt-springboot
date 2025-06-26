@@ -5,7 +5,7 @@ import lombok.Data;
 
 @Data
 public class GroupCreateDTO {
-    private String name;
+    private String code;
     private Long idSemestre;
     private Long idSubject;
     private Long idUser; // opcional

@@ -37,8 +37,8 @@ public class Group {
     @JoinColumn(name = "id_user")
     private User user;
 
-    @Column(name="name", nullable = false)
-    String name;
+    @Column(name="code", nullable = false)
+    String code;
 
     @Column(name="start_time")
     LocalTime startTime;
