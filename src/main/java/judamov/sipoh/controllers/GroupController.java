@@ -3,6 +3,7 @@ package judamov.sipoh.controllers;
 import judamov.sipoh.dto.GroupCreateDTO;
 import judamov.sipoh.dto.GroupDTO;
 import judamov.sipoh.dto.GroupUpdateDTO;
+import judamov.sipoh.service.impl.GroupServiceImpl;
 import judamov.sipoh.service.interfaces.IGroupService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -15,7 +16,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class GroupController {
 
-    private final IGroupService groupService;
+    private final GroupServiceImpl groupService;
 
     @GetMapping("/by-semesters")
     public ResponseEntity<List<GroupDTO>> getAllBySemesters(
