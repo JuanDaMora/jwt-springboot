@@ -1,18 +1,6 @@
 CREATE SCHEMA IF NOT EXISTS sigha;
 SET search_path TO sigha;
 
-CREATE TABLE "group"(
-    id SERIAL PRIMARY KEY,
-    id_semester INTEGER NOT NULL REFERENCES semester(id),
-    id_subject INTEGER NOT NULL REFERENCES subject(id),
-    id_user INTEGER REFERENCES "user"(id),
-    code VARCHAR(50) UNIQUE NOT NULL,
-    start_time TIME,
-    day_of_week VARCHAR(20),
-    creation_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    update_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-)
-
 CREATE TABLE email_templates (
     id SERIAL PRIMARY KEY,
     code VARCHAR(50) UNIQUE NOT NULL,
@@ -145,7 +133,17 @@ CREATE TABLE IF NOT EXISTS availability (
     creation_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     update_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP
     );
-
+CREATE TABLE IF NOT EXISTS "group"(
+                                      id SERIAL PRIMARY KEY,
+                                      id_semester INTEGER NOT NULL REFERENCES semester(id),
+    id_subject INTEGER NOT NULL REFERENCES subject(id),
+    id_user INTEGER REFERENCES "user"(id),
+    code VARCHAR(50) UNIQUE NOT NULL,
+    start_time TIME,
+    day_of_week VARCHAR(20),
+    creation_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    update_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    );
 -- Datos base
 INSERT INTO roles (name) VALUES
                              ('DIRECTOR DE ESCUELA'),
