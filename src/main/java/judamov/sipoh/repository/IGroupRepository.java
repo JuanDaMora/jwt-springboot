@@ -16,5 +16,7 @@ public interface IGroupRepository extends JpaRepository<Group, Long> {
 
     Optional<List<Group>> findBySubject(Subject subject);
 
-    Optional<List<Group>> findByUser(User user);
+    Optional<List<Group>> findByDocente(User user);
+
+    Optional<Group> findByCode(String code);
 }

@@ -1,7 +1,10 @@
 package judamov.sipoh.dto;
 
+import judamov.sipoh.entity.Schedule;
 import judamov.sipoh.enums.DayOfWeekEnum;
 import lombok.Data;
+
+import java.util.List;
 
 @Data
 public class GroupUpdateDTO {
@@ -9,6 +12,5 @@ public class GroupUpdateDTO {
     private Long idSemestre;
     private Long idSubject;
     private Long idUser;
-    private DayOfWeekEnum dayOfWeek;
-    private Integer hour; // solo hora entera (ej. 13 para 1 PM)
+    private List<ScheduleDTO> scheduleList;
 }

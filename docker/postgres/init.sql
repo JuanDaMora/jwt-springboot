@@ -134,11 +134,18 @@ CREATE TABLE IF NOT EXISTS availability (
     update_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP
     );
 CREATE TABLE IF NOT EXISTS "group"(
-                                      id SERIAL PRIMARY KEY,
-                                      id_semester INTEGER NOT NULL REFERENCES semester(id),
+    id SERIAL PRIMARY KEY,
+    id_semester INTEGER NOT NULL REFERENCES semester(id),
     id_subject INTEGER NOT NULL REFERENCES subject(id),
     id_user INTEGER REFERENCES "user"(id),
-    code VARCHAR(50) UNIQUE NOT NULL,
+    code VARCHAR(50) NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    );
+
+CREATE TABLE IF NOT EXISTS schedule(
+    id SERIAL PRIMARY KEY,
+    id_group INTEGER NOT NULL REFERENCES "group"(id),
     start_time TIME,
     day_of_week VARCHAR(20),
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,

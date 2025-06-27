@@ -50,19 +50,17 @@ public class GroupController {
     }
 
     @PutMapping("/{groupId}")
-    public ResponseEntity<GroupDTO> updateGroup(
+    public ResponseEntity<Boolean> updateGroup(
             @PathVariable Long groupId,
             @RequestBody GroupUpdateDTO dto,
             @RequestHeader Long userId) {
-        GroupDTO updated = groupService.updateGroup(groupId, dto, userId);
-        return ResponseEntity.ok(updated);
+        return ResponseEntity.ok( groupService.updateGroup(groupId, dto, userId));
     }
     @PostMapping
-    public ResponseEntity<GroupDTO> createGroup(
+    public ResponseEntity<Boolean> createGroup(
             @RequestBody GroupCreateDTO dto,
             @RequestHeader Long userId) {
-        GroupDTO created = groupService.createGroup(dto, userId);
-        return ResponseEntity.status(201).body(created);
+        return ResponseEntity.ok(groupService.createGroup(dto, userId));
     }
 
 }

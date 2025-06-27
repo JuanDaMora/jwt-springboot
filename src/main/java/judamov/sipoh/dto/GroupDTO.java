@@ -1,10 +1,13 @@
 package judamov.sipoh.dto;
 
+import judamov.sipoh.entity.Schedule;
 import judamov.sipoh.enums.DayOfWeekEnum;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
+import java.util.List;
 
 @Data
 @Builder
@@ -18,6 +21,5 @@ public class GroupDTO {
     private Long idLevel;
     private String levelName;
     private String code;
-    private DayOfWeekEnum dayOfWeek;
-    private Integer hour;
+    private List<ScheduleDTO> scheduleList;
 }
