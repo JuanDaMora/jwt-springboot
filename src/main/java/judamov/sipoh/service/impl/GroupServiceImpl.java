@@ -157,7 +157,7 @@ public class GroupServiceImpl implements IGroupService {
         Semester semester = semesterRepository.findById(dto.getIdSemestre())
                 .orElseThrow(() -> new GenericAppException(HttpStatus.NOT_FOUND, "Semestre no encontrado"));
 
-        User user = (dto.getIdUser() != null) ? getUserById(dto.getIdUser()) : null;
+        User user = (dto.getIdDocente() != null) ? getUserById(dto.getIdDocente()) : null;
 
         group.setCode(dto.getCode());
         group.setSemester(semester);
