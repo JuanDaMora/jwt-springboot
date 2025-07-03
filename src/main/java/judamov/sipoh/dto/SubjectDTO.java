@@ -12,4 +12,7 @@ import lombok.NoArgsConstructor;
 public class SubjectDTO {
     Long id;
     String name;
+    Long idLevel;
+    String nivel;
+    String codigo;
 }
