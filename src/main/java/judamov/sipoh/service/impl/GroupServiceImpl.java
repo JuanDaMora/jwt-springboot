@@ -1,9 +1,6 @@
 package judamov.sipoh.service.impl;
 
-import judamov.sipoh.dto.GroupCreateDTO;
-import judamov.sipoh.dto.GroupDTO;
-import judamov.sipoh.dto.GroupUpdateDTO;
-import judamov.sipoh.dto.ScheduleDTO;
+import judamov.sipoh.dto.*;
 import judamov.sipoh.entity.*;
 import judamov.sipoh.exceptions.GenericAppException;
 import judamov.sipoh.mappers.GroupMapper;
@@ -26,6 +23,7 @@ public class GroupServiceImpl implements IGroupService {
     private final ISubjectRepository subjectRepository;
     private final ISemesterRepository semesterRepository;
     private final IScheduleRepository scheduleRepository;
+    private final ScheduleServiceImpl scheduleService;
 
     /**
      * Obtiene todos los grupos de un semestre específico.
@@ -121,7 +119,7 @@ public class GroupServiceImpl implements IGroupService {
         Semester semester = semesterRepository.findById(dto.getIdSemestre())
                 .orElseThrow(() -> new GenericAppException(HttpStatus.NOT_FOUND, "Semestre no encontrado"));
 
-        User user = (dto.getIdUser() != null) ? getUserById(dto.getIdUser()) : null;
+        User user = (dto.getIdDocente() != null) ? getUserById(dto.getIdDocente()) : null;
 
         Group group = new Group();
         group.setCode(dto.getCode());
@@ -129,7 +127,12 @@ public class GroupServiceImpl implements IGroupService {
         group.setSubject(subject);
         group.setDocente(user);
 
-        groupRepository.save(group);
+        Group savedGroup = groupRepository.save(group);
+        ScheduleCreateDTO scheduleCreateDTO = new ScheduleCreateDTO(
+                savedGroup.getId(),
+                dto.getScheduleList()
+        );
+        scheduleService.createSchedule(scheduleCreateDTO,adminId);
         return true;
     }
 
@@ -162,6 +165,17 @@ public class GroupServiceImpl implements IGroupService {
         group.setDocente(user);
 
         groupRepository.save(group);
+        return true;
+    }
+
+
+
+    public Boolean deleteGroup(Long groupId, Long adminId){
+        validateAdminAccess(adminId);
+        Group group = groupRepository.findById(groupId)
+                .orElseThrow(() -> new GenericAppException(HttpStatus.NOT_FOUND, "Grupo no encontrado"));
+        scheduleService.deleteSceduleByGroup(group,adminId);
+        groupRepository.delete(group);
         return true;
     }
 
@@ -219,7 +233,6 @@ public class GroupServiceImpl implements IGroupService {
 
         return groupDTOList;
     }
-
 
 
 }

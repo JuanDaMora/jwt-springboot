@@ -1,8 +1,10 @@
 package judamov.sipoh.service.interfaces;
 
+import judamov.sipoh.dto.ScheduleCreateDTO;
+import judamov.sipoh.dto.ScheduleDTO;
+
 import java.util.List;
 
 public interface IScheduleService {
-    Boolean deleteSchedule(Long idSchedule,Long adminId);
-    Boolean deleteSchedule(List<Long> idSchedules,Long adminId);
+    List<ScheduleDTO> createSchedule(ScheduleCreateDTO dto, Long adminId);
 }

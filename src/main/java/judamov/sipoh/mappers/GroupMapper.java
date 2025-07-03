@@ -16,7 +16,7 @@ public class GroupMapper {
                 .code(group.getCode())
                 .idSemestre(group.getSemester() != null ? group.getSemester().getId() : null)
                 .idSubject(group.getSubject() != null ? group.getSubject().getId() : null)
-                .idUser(group.getDocente() != null ? group.getDocente().getId() : null)
+                .idDocente(group.getDocente() != null ? group.getDocente().getId() : null)
                 .idLevel(group.getSubject() != null && group.getSubject().getLevelSubject() != null
                         ? group.getSubject().getLevelSubject().getId()
                         : null)

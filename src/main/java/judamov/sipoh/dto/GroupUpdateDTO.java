@@ -12,5 +12,4 @@ public class GroupUpdateDTO {
     private Long idSemestre;
     private Long idSubject;
     private Long idUser;
-    private List<ScheduleDTO> scheduleList;
 }

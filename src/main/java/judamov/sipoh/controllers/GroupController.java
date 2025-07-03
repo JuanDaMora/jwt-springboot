@@ -11,8 +11,8 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/v1/groups")
 @RequiredArgsConstructor
+@RequestMapping("/api/v1/group")
 public class GroupController {
 
     private final GroupServiceImpl groupService;
@@ -61,6 +61,13 @@ public class GroupController {
             @RequestBody GroupCreateDTO dto,
             @RequestHeader Long userId) {
         return ResponseEntity.ok(groupService.createGroup(dto, userId));
+    }
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Boolean> deleteGroup(
+            @PathVariable Long id,
+            @RequestHeader Long userId
+    ){
+        return ResponseEntity.ok(groupService.deleteGroup(id,userId));
     }
 
 }
