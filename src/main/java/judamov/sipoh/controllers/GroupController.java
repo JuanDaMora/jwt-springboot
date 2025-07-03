@@ -19,33 +19,36 @@ public class GroupController {
 
     @GetMapping("/by-semesters")
     public ResponseEntity<List<GroupDTO>> getAllBySemesters(
-            @RequestParam Long idSemester,
+            @RequestHeader Long semesterId,
             @RequestHeader Long userId) {
-        List<GroupDTO> groups = groupService.getAllBySemester(idSemester, userId);
+        List<GroupDTO> groups = groupService.getAllBySemester(userId, semesterId);
         return ResponseEntity.ok(groups);
     }
 
     @GetMapping("/by-levels")
     public ResponseEntity<List<GroupDTO>> getAllByLevels(
             @RequestParam List<Long> idLevels,
+            @RequestHeader Long semesterId,
             @RequestHeader Long userId) {
-        List<GroupDTO> groups = groupService.getAllByLevels(idLevels, userId);
+        List<GroupDTO> groups = groupService.getAllByLevels(idLevels, userId, semesterId);
         return ResponseEntity.ok(groups);
     }
 
     @GetMapping("/by-subject")
     public ResponseEntity<List<GroupDTO>> getAllBySubject(
             @RequestParam Long idSubject,
+            @RequestHeader Long semesterId,
             @RequestHeader Long userId) {
-        List<GroupDTO> groups = groupService.getAllBySubject(idSubject, userId);
+        List<GroupDTO> groups = groupService.getAllBySubject(idSubject, userId, semesterId);
         return ResponseEntity.ok(groups);
     }
 
     @GetMapping("/by-docente")
     public ResponseEntity<List<GroupDTO>> getAllByDocente(
             @RequestParam Long idDocente,
+            @RequestHeader Long semesterId,
             @RequestHeader Long userId) {
-        List<GroupDTO> groups = groupService.getAllByDocente(idDocente, userId);
+        List<GroupDTO> groups = groupService.getAllByDocente(idDocente, userId, semesterId);
         return ResponseEntity.ok(groups);
     }
 

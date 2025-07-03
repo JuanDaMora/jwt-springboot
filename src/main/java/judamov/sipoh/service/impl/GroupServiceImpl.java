@@ -28,16 +28,16 @@ public class GroupServiceImpl implements IGroupService {
     /**
      * Obtiene todos los grupos de un semestre específico.
      *
-     * @param idSemester ID del semestre.
+     * @param semesterId ID del semestre.
      * @param adminId    ID del administrador que hace la consulta.
      * @return Lista de DTOs con horarios incluidos.
      */
     @Override
-    public List<GroupDTO> getAllBySemester(Long idSemester, Long adminId) {
+    public List<GroupDTO> getAllBySemester(Long adminId, Long semesterId) {
         validateAdminAccess(adminId);
 
         List<Group> groups = groupRepository.findAll().stream()
-                .filter(group -> group.getSemester() != null && group.getSemester().getId().equals(idSemester))
+                .filter(group -> group.getSemester() != null && group.getSemester().getId().equals(semesterId))
                 .toList();
 
         return mapWithSchedules(groups);
@@ -51,10 +51,12 @@ public class GroupServiceImpl implements IGroupService {
      * @return Lista de DTOs con horarios incluidos.
      */
     @Override
-    public List<GroupDTO> getAllByLevels(List<Long> idLevels, Long adminId) {
+    public List<GroupDTO> getAllByLevels(List<Long> idLevels, Long adminId, Long semesterId) {
         validateAdminAccess(adminId);
+        Semester semester= semesterRepository.findById(semesterId)
+                .orElseThrow(() -> new GenericAppException(HttpStatus.NOT_FOUND, "El semestre con id "+semesterId+" no existe"));
 
-        List<Group> groups = groupRepository.findAll().stream()
+        List<Group> groups = groupRepository.findBySemester(semester).stream()
                 .filter(group -> group.getSubject() != null &&
                         group.getSubject().getLevelSubject() != null &&
                         idLevels.contains(group.getSubject().getLevelSubject().getId()))
@@ -71,13 +73,15 @@ public class GroupServiceImpl implements IGroupService {
      * @return Lista de DTOs con horarios incluidos.
      */
     @Override
-    public List<GroupDTO> getAllBySubject(Long idSubject, Long adminId) {
+    public List<GroupDTO> getAllBySubject(Long idSubject, Long adminId, Long semesterId) {
         validateAdminAccess(adminId);
 
         Subject subject = subjectRepository.findById(idSubject)
                 .orElseThrow(() -> new GenericAppException(HttpStatus.NOT_FOUND, "Materia no encontrada"));
+        Semester semester= semesterRepository.findById(semesterId)
+                .orElseThrow(() -> new GenericAppException(HttpStatus.NOT_FOUND, "El semestre con id "+semesterId+" no existe"));
 
-        List<Group> groups = groupRepository.findBySubject(subject)
+        List<Group> groups = groupRepository.findBySubjectAndSemester(subject,semester)
                 .orElseThrow(() -> new GenericAppException(HttpStatus.NOT_FOUND, "No hay grupos para esta materia"));
 
         return mapWithSchedules(groups);
@@ -91,12 +95,14 @@ public class GroupServiceImpl implements IGroupService {
      * @return Lista de DTOs con horarios incluidos.
      */
     @Override
-    public List<GroupDTO> getAllByDocente(Long idUser, Long adminId) {
+    public List<GroupDTO> getAllByDocente(Long idUser, Long adminId, Long semesterId) {
         validateAdminAccess(adminId);
 
         User docente = getUserById(idUser);
+        Semester semester= semesterRepository.findById(semesterId)
+                .orElseThrow(() -> new GenericAppException(HttpStatus.NOT_FOUND, "El semestre con id "+semesterId+" no existe"));
 
-        List<Group> groups = groupRepository.findByDocente(docente)
+        List<Group> groups = groupRepository.findByDocenteAndSemester(docente,semester)
                 .orElseThrow(() -> new GenericAppException(HttpStatus.NOT_FOUND, "El docente no tiene grupos asignados"));
 
         return mapWithSchedules(groups);
