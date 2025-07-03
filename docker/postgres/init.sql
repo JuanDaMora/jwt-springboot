@@ -207,7 +207,7 @@ INSERT INTO subject (id_area, id_level_subject, codigo, name, max_students, crea
 VALUES (
            (SELECT id FROM area WHERE description = 'MATEMÁTICAS COMPUTACIONALES'),
            (SELECT id FROM level_subject WHERE description = 'NIVEL 3'),
-           NULL,
+           '12345',
            'MATEMÁTICAS DISCRETAS',
            NULL,
            NOW(), NOW()
@@ -218,14 +218,14 @@ VALUES (
            (SELECT id FROM level_subject WHERE description = 'NIVEL 6'),
            NULL,
            'ESTADÍSTICA I',
-           NULL,
+           '12345',
            NOW(), NOW()
        );
 INSERT INTO subject (id_area, id_level_subject, codigo, name, max_students, creation_date, update_date)
 VALUES (
            (SELECT id FROM area WHERE description = 'MATEMÁTICAS COMPUTACIONALES'),
            (SELECT id FROM level_subject WHERE description = 'NIVEL 7'),
-           NULL,
+           '12345',
            'ESTADÍSTICA II',
            NULL,
            NOW(), NOW()
@@ -234,7 +234,7 @@ INSERT INTO subject (id_area, id_level_subject, codigo, name, max_students, crea
 VALUES (
            (SELECT id FROM area WHERE description = 'MATEMÁTICAS COMPUTACIONALES'),
            (SELECT id FROM level_subject WHERE description = 'NIVEL 5'),
-           NULL,
+           '12345',
            'ANÁLISIS NUMÉRICO',
            NULL,
            NOW(), NOW()
@@ -243,7 +243,7 @@ INSERT INTO subject (id_area, id_level_subject, codigo, name, max_students, crea
 VALUES (
            (SELECT id FROM area WHERE description = 'ARQUITECTURA Y FUNCIONAMIENTO DEL COMPUTADOR'),
            (SELECT id FROM level_subject WHERE description = 'NIVEL 4'),
-           NULL,
+           '12345',
            'ELECTRICIDAD Y ELECTRÓNICA',
            NULL,
            NOW(), NOW()
@@ -254,7 +254,7 @@ VALUES (
            (SELECT id FROM level_subject WHERE description = 'NIVEL 5'),
            NULL,
            'SISTEMAS DIGITALES',
-           NULL,
+           '12345',
            NOW(), NOW()
        );
 INSERT INTO subject (id_area, id_level_subject, codigo, name, max_students, creation_date, update_date)
@@ -263,7 +263,7 @@ VALUES (
            (SELECT id FROM level_subject WHERE description = 'NIVEL 6'),
            NULL,
            'ARQUITECTURA DE COMPUTADORES',
-           NULL,
+           '12345',
            NOW(), NOW()
        );
 INSERT INTO subject (id_area, id_level_subject, codigo, name, max_students, creation_date, update_date)
@@ -272,14 +272,14 @@ VALUES (
            (SELECT id FROM level_subject WHERE description = 'NIVEL 8'),
            NULL,
            'SISTEMAS OPERACIONALES',
-           NULL,
+           '12345',
            NOW(), NOW()
        );
 INSERT INTO subject (id_area, id_level_subject, codigo, name, max_students, creation_date, update_date)
 VALUES (
            (SELECT id FROM area WHERE description = 'ARQUITECTURA Y FUNCIONAMIENTO DEL COMPUTADOR'),
            (SELECT id FROM level_subject WHERE description = 'NIVEL 10'),
-           NULL,
+           '12345',
            'SISTEMAS DISTRIBUIDOS',
            NULL,
            NOW(), NOW()
@@ -288,7 +288,7 @@ INSERT INTO subject (id_area, id_level_subject, codigo, name, max_students, crea
 VALUES (
            (SELECT id FROM area WHERE description = 'ALGORÍTMICA E INFORMÁTICA'),
            (SELECT id FROM level_subject WHERE description = 'NIVEL 1'),
-           NULL,
+           '12345',
            'FUNDAMENTOS DE PROGRAMACIÓN',
            NULL,
            NOW(), NOW()
@@ -297,7 +297,7 @@ INSERT INTO subject (id_area, id_level_subject, codigo, name, max_students, crea
 VALUES (
            (SELECT id FROM area WHERE description = 'ALGORÍTMICA E INFORMÁTICA'),
            (SELECT id FROM level_subject WHERE description = 'NIVEL 2'),
-           NULL,
+           '12345',
            'PROGRAMACIÓN ORIENTADA A OBJETOS',
            NULL,
            NOW(), NOW()
@@ -306,7 +306,7 @@ INSERT INTO subject (id_area, id_level_subject, codigo, name, max_students, crea
 VALUES (
            (SELECT id FROM area WHERE description = 'ALGORÍTMICA E INFORMÁTICA'),
            (SELECT id FROM level_subject WHERE description = 'NIVEL 3'),
-           NULL,
+           '12345',
            'ESTRUCTURA DE DATOS Y ANÁLISIS DE ALGORITMOS',
            NULL,
            NOW(), NOW()
@@ -315,7 +315,7 @@ INSERT INTO subject (id_area, id_level_subject, codigo, name, max_students, crea
 VALUES (
            (SELECT id FROM area WHERE description = 'ALGORÍTMICA E INFORMÁTICA'),
            (SELECT id FROM level_subject WHERE description = 'NIVEL 6'),
-           NULL,
+           '12345',
            'PROGRAMACIÓN EN LA WEB',
            NULL,
            NOW(), NOW()
@@ -324,7 +324,7 @@ INSERT INTO subject (id_area, id_level_subject, codigo, name, max_students, crea
 VALUES (
            (SELECT id FROM area WHERE description = 'ALGORÍTMICA E INFORMÁTICA'),
            (SELECT id FROM level_subject WHERE description = 'NIVEL 4'),
-           NULL,
+           '12345',
            'AUTÓMATAS Y LENGUAJES FORMALES',
            NULL,
            NOW(), NOW()
@@ -333,7 +333,7 @@ INSERT INTO subject (id_area, id_level_subject, codigo, name, max_students, crea
 VALUES (
            (SELECT id FROM area WHERE description = 'ALGORÍTMICA E INFORMÁTICA'),
            (SELECT id FROM level_subject WHERE description = 'NIVEL 10'),
-           NULL,
+           '12345',
            'ENTORNOS DE PROGRAMACIÓN',
            NULL,
            NOW(), NOW()
@@ -342,7 +342,7 @@ INSERT INTO subject (id_area, id_level_subject, codigo, name, max_students, crea
 VALUES (
            (SELECT id FROM area WHERE description = 'ALGORÍTMICA E INFORMÁTICA'),
            (SELECT id FROM level_subject WHERE description = 'NIVEL 10'),
-           NULL,
+           '12345',
            'PROGRAMACIÓN DISTRIBUIDA',
            NULL,
            NOW(), NOW()
@@ -351,7 +351,7 @@ INSERT INTO subject (id_area, id_level_subject, codigo, name, max_students, crea
 VALUES (
            (SELECT id FROM area WHERE description = 'ADMINISTRACIÓN DE LA INFORMACIÓN'),
            (SELECT id FROM level_subject WHERE description = 'NIVEL 4'),
-           NULL,
+           '12345',
            'BASE DE DATOS I',
            NULL,
            NOW(), NOW()
@@ -360,7 +360,7 @@ INSERT INTO subject (id_area, id_level_subject, codigo, name, max_students, crea
 VALUES (
            (SELECT id FROM area WHERE description = 'ADMINISTRACIÓN DE LA INFORMACIÓN'),
            (SELECT id FROM level_subject WHERE description = 'NIVEL 5'),
-           NULL,
+           '12345',
            'BASE DE DATOS II',
            NULL,
            NOW(), NOW()
@@ -369,7 +369,7 @@ INSERT INTO subject (id_area, id_level_subject, codigo, name, max_students, crea
 VALUES (
            (SELECT id FROM area WHERE description = 'ADMINISTRATIVAS Y ORGANIZACIONALES'),
            (SELECT id FROM level_subject WHERE description = 'NIVEL 5'),
-           NULL,
+           '12345',
            'PENSAMIENTO SISTÉMICO Y ORGANIZACIONAL',
            NULL,
            NOW(), NOW()
@@ -378,7 +378,7 @@ INSERT INTO subject (id_area, id_level_subject, codigo, name, max_students, crea
 VALUES (
            (SELECT id FROM area WHERE description = 'ADMINISTRATIVAS Y ORGANIZACIONALES'),
            (SELECT id FROM level_subject WHERE description = 'NIVEL 6'),
-           NULL,
+           '12345',
            'SISTEMAS DE INFORMACIÓN',
            NULL,
            NOW(), NOW()
@@ -387,7 +387,7 @@ INSERT INTO subject (id_area, id_level_subject, codigo, name, max_students, crea
 VALUES (
            (SELECT id FROM area WHERE description = 'ADMINISTRATIVAS Y ORGANIZACIONALES'),
            (SELECT id FROM level_subject WHERE description = 'NIVEL 10'),
-           NULL,
+           '12345',
            'AUDITORÍA DE SISTEMAS',
            NULL,
            NOW(), NOW()
@@ -396,7 +396,7 @@ INSERT INTO subject (id_area, id_level_subject, codigo, name, max_students, crea
 VALUES (
            (SELECT id FROM area WHERE description = 'REDES Y COMUNICACIONES'),
            (SELECT id FROM level_subject WHERE description = 'NIVEL 6'),
-           NULL,
+           '12345',
            'REDES DE COMPUTADORES I',
            NULL,
            NOW(), NOW()
@@ -405,7 +405,7 @@ INSERT INTO subject (id_area, id_level_subject, codigo, name, max_students, crea
 VALUES (
            (SELECT id FROM area WHERE description = 'REDES Y COMUNICACIONES'),
            (SELECT id FROM level_subject WHERE description = 'NIVEL 7'),
-           NULL,
+           '12345',
            'REDES DE COMPUTADORES II',
            NULL,
            NOW(), NOW()
@@ -414,7 +414,7 @@ INSERT INTO subject (id_area, id_level_subject, codigo, name, max_students, crea
 VALUES (
            (SELECT id FROM area WHERE description = 'REDES Y COMUNICACIONES'),
            (SELECT id FROM level_subject WHERE description = 'NIVEL 10'),
-           NULL,
+           '12345',
            'GESTIÓN DE REDES EMPRESARIALES',
            NULL,
            NOW(), NOW()
@@ -423,7 +423,7 @@ INSERT INTO subject (id_area, id_level_subject, codigo, name, max_students, crea
 VALUES (
            (SELECT id FROM area WHERE description = 'INGENIERÍA DEL SOFTWARE'),
            (SELECT id FROM level_subject WHERE description = 'NIVEL 7'),
-           NULL,
+           '12345',
            'INGENIERÍA DEL SOFTWARE I',
            NULL,
            NOW(), NOW()
@@ -432,7 +432,7 @@ INSERT INTO subject (id_area, id_level_subject, codigo, name, max_students, crea
 VALUES (
            (SELECT id FROM area WHERE description = 'INGENIERÍA DEL SOFTWARE'),
            (SELECT id FROM level_subject WHERE description = 'NIVEL 8'),
-           NULL,
+           '12345',
            'INGENIERÍA DEL SOFTWARE II',
            NULL,
            NOW(), NOW()
@@ -441,7 +441,7 @@ INSERT INTO subject (id_area, id_level_subject, codigo, name, max_students, crea
 VALUES (
            (SELECT id FROM area WHERE description = 'SISTEMAS'),
            (SELECT id FROM level_subject WHERE description = 'NIVEL 8'),
-           NULL,
+           '12345',
            'SIMULACIÓN DIGITAL',
            NULL,
            NOW(), NOW()
@@ -450,7 +450,7 @@ INSERT INTO subject (id_area, id_level_subject, codigo, name, max_students, crea
 VALUES (
            (SELECT id FROM area WHERE description = 'SISTEMAS'),
            (SELECT id FROM level_subject WHERE description = 'NIVEL 10'),
-           NULL,
+           '12345',
            'TRATAMIENTO DE SEÑALES',
            NULL,
            NOW(), NOW()
@@ -459,7 +459,7 @@ INSERT INTO subject (id_area, id_level_subject, codigo, name, max_students, crea
 VALUES (
            (SELECT id FROM area WHERE description = 'SISTEMAS'),
            (SELECT id FROM level_subject WHERE description = 'NIVEL 10'),
-           NULL,
+           '12345',
            'MODELADO ESTRUCTURAL',
            NULL,
            NOW(), NOW()
@@ -468,7 +468,7 @@ INSERT INTO subject (id_area, id_level_subject, codigo, name, max_students, crea
 VALUES (
            (SELECT id FROM area WHERE description = 'SISTEMAS'),
            (SELECT id FROM level_subject WHERE description = 'NIVEL 10'),
-           NULL,
+           '12345',
            'INVESTIGACIÓN OPERACIONAL',
            NULL,
            NOW(), NOW()
@@ -477,7 +477,7 @@ INSERT INTO subject (id_area, id_level_subject, codigo, name, max_students, crea
 VALUES (
            (SELECT id FROM area WHERE description = 'SISTEMAS'),
            (SELECT id FROM level_subject WHERE description = 'NIVEL 10'),
-           NULL,
+           '12345',
            'MODELOS A GRAN ESCALA',
            NULL,
            NOW(), NOW()
@@ -486,7 +486,7 @@ INSERT INTO subject (id_area, id_level_subject, codigo, name, max_students, crea
 VALUES (
            (SELECT id FROM area WHERE description = 'SISTEMAS'),
            (SELECT id FROM level_subject WHERE description = 'NIVEL 10'),
-           NULL,
+           '12345',
            'SISTEMAS DISCRETOS Y CONTINUOS',
            NULL,
            NOW(), NOW()
@@ -495,7 +495,7 @@ INSERT INTO subject (id_area, id_level_subject, codigo, name, max_students, crea
 VALUES (
            (SELECT id FROM area WHERE description = 'INGENIERÍA ARTIFICIAL'),
            (SELECT id FROM level_subject WHERE description = 'NIVEL 7'),
-           NULL,
+           '12345',
            'INGENIERÍA ARTIFICIAL I',
            NULL,
            NOW(), NOW()
@@ -504,7 +504,7 @@ INSERT INTO subject (id_area, id_level_subject, codigo, name, max_students, crea
 VALUES (
            (SELECT id FROM area WHERE description = 'INGENIERÍA ARTIFICIAL'),
            (SELECT id FROM level_subject WHERE description = 'NIVEL 10'),
-           NULL,
+           '12345',
            'INGENIERÍA ARTIFICIAL II',
            NULL,
            NOW(), NOW()
@@ -513,7 +513,7 @@ INSERT INTO subject (id_area, id_level_subject, codigo, name, max_students, crea
 VALUES (
            (SELECT id FROM area WHERE description = 'INGENIERÍA ARTIFICIAL'),
            (SELECT id FROM level_subject WHERE description = 'NIVEL 10'),
-           NULL,
+           '12345',
            'INGENIERÍA ARTIFICIAL III',
            NULL,
            NOW(), NOW()
@@ -522,7 +522,7 @@ INSERT INTO subject (id_area, id_level_subject, codigo, name, max_students, crea
 VALUES (
            (SELECT id FROM area WHERE description = 'INGENIERÍA ARTIFICIAL'),
            (SELECT id FROM level_subject WHERE description = 'NIVEL 10'),
-           NULL,
+           '12345',
            'MICROCONTROLADORES I',
            NULL,
            NOW(), NOW()
@@ -531,7 +531,7 @@ INSERT INTO subject (id_area, id_level_subject, codigo, name, max_students, crea
 VALUES (
            (SELECT id FROM area WHERE description = 'INGENIERÍA ARTIFICIAL'),
            (SELECT id FROM level_subject WHERE description = 'NIVEL 10'),
-           NULL,
+           '12345',
            'MICROCONTROLADORES II',
            NULL,
            NOW(), NOW()
@@ -540,7 +540,7 @@ INSERT INTO subject (id_area, id_level_subject, codigo, name, max_students, crea
 VALUES (
            (SELECT id FROM area WHERE description = 'INGENIERÍA ARTIFICIAL'),
            (SELECT id FROM level_subject WHERE description = 'NIVEL 10'),
-           NULL,
+           '12345',
            'INFORMÁTICA BIOMÉDICA',
            NULL,
            NOW(), NOW()
