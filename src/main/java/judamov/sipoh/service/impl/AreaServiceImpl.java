@@ -41,9 +41,9 @@ public class AreaServiceImpl  implements IAreaService {
                             .map(subject -> SubjectDTO.builder()
                                     .id(subject.getId())
                                     .name(subject.getName())
-                                    .codigo(subject.getCodigo())
+                                    .code(subject.getCodigo())
                                     .idLevel(subject.getLevelSubject().getId())
-                                    .nivel(subject.getLevelSubject().getDescription())
+                                    .level(subject.getLevelSubject().getDescription())
                                     .build())
                             .toList();
 
