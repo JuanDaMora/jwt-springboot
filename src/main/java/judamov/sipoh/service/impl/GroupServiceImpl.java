@@ -116,13 +116,13 @@ public class GroupServiceImpl implements IGroupService {
      * @return Grupo creado en forma de DTO.
      */
     @Override
-    public Boolean createGroup(GroupCreateDTO dto, Long adminId) {
+    public Boolean createGroup(GroupCreateDTO dto, Long adminId, Long idSemester) {
         validateAdminAccess(adminId);
 
         Subject subject = subjectRepository.findById(dto.getIdSubject())
                 .orElseThrow(() -> new GenericAppException(HttpStatus.NOT_FOUND, "Materia no encontrada"));
 
-        Semester semester = semesterRepository.findById(dto.getIdSemester())
+        Semester semester = semesterRepository.findById(idSemester)
                 .orElseThrow(() -> new GenericAppException(HttpStatus.NOT_FOUND, "Semestre no encontrado"));
 
         User user = (dto.getIdDocente() != null) ? getUserById(dto.getIdDocente()) : null;

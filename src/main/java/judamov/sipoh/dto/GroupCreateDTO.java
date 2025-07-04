@@ -7,7 +7,6 @@ import java.util.List;
 @Data
 public class GroupCreateDTO {
     private String code;
-    private Long idSemester;
     private Long idSubject;
     private Long idDocente;
     private List<ScheduleDTO> scheduleList;

@@ -62,8 +62,9 @@ public class GroupController {
     @PostMapping
     public ResponseEntity<Boolean> createGroup(
             @RequestBody GroupCreateDTO dto,
+            @RequestHeader Long idSemester,
             @RequestHeader Long userId) {
-        return ResponseEntity.ok(groupService.createGroup(dto, userId));
+        return ResponseEntity.ok(groupService.createGroup(dto, userId, idSemester));
     }
     @DeleteMapping("/{id}")
     public ResponseEntity<Boolean> deleteGroup(
