@@ -55,16 +55,17 @@ public class GroupController {
     @PutMapping("/{groupId}")
     public ResponseEntity<Boolean> updateGroup(
             @PathVariable Long groupId,
+            @RequestHeader Long semesterId,
             @RequestBody GroupUpdateDTO dto,
             @RequestHeader Long userId) {
-        return ResponseEntity.ok( groupService.updateGroup(groupId, dto, userId));
+        return ResponseEntity.ok( groupService.updateGroup(groupId, dto, userId, semesterId));
     }
     @PostMapping
     public ResponseEntity<Boolean> createGroup(
             @RequestBody GroupCreateDTO dto,
-            @RequestHeader Long idSemester,
+            @RequestHeader Long semesterId,
             @RequestHeader Long userId) {
-        return ResponseEntity.ok(groupService.createGroup(dto, userId, idSemester));
+        return ResponseEntity.ok(groupService.createGroup(dto, userId, semesterId));
     }
     @DeleteMapping("/{id}")
     public ResponseEntity<Boolean> deleteGroup(

@@ -116,13 +116,13 @@ public class GroupServiceImpl implements IGroupService {
      * @return Grupo creado en forma de DTO.
      */
     @Override
-    public Boolean createGroup(GroupCreateDTO dto, Long adminId, Long idSemester) {
+    public Boolean createGroup(GroupCreateDTO dto, Long adminId, Long semesterId) {
         validateAdminAccess(adminId);
 
         Subject subject = subjectRepository.findById(dto.getIdSubject())
                 .orElseThrow(() -> new GenericAppException(HttpStatus.NOT_FOUND, "Materia no encontrada"));
 
-        Semester semester = semesterRepository.findById(idSemester)
+        Semester semester = semesterRepository.findById(semesterId)
                 .orElseThrow(() -> new GenericAppException(HttpStatus.NOT_FOUND, "Semestre no encontrado"));
 
         User user = (dto.getIdDocente() != null) ? getUserById(dto.getIdDocente()) : null;
@@ -151,7 +151,7 @@ public class GroupServiceImpl implements IGroupService {
      * @return Grupo actualizado en forma de DTO.
      */
     @Override
-    public Boolean updateGroup(Long groupId, GroupUpdateDTO dto, Long adminId) {
+    public Boolean updateGroup(Long groupId, GroupUpdateDTO dto, Long adminId, Long semesterId) {
         validateAdminAccess(adminId);
 
         Group group = groupRepository.findById(groupId)
@@ -160,7 +160,7 @@ public class GroupServiceImpl implements IGroupService {
         Subject subject = subjectRepository.findById(dto.getIdSubject())
                 .orElseThrow(() -> new GenericAppException(HttpStatus.NOT_FOUND, "Materia no encontrada"));
 
-        Semester semester = semesterRepository.findById(dto.getIdSemester())
+        Semester semester = semesterRepository.findById(semesterId)
                 .orElseThrow(() -> new GenericAppException(HttpStatus.NOT_FOUND, "Semestre no encontrado"));
 
         User user = (dto.getIdDocente() != null) ? getUserById(dto.getIdDocente()) : null;
