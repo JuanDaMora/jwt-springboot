@@ -73,10 +73,10 @@ public class GroupServiceImpl implements IGroupService {
      * @return Lista de DTOs con horarios incluidos.
      */
     @Override
-    public List<GroupDTO> getAllBySubject(Long idSubject, Long adminId, Long semesterId) {
+    public List<GroupDTO> getAllBySubject(Long subjectId, Long adminId, Long semesterId) {
         validateAdminAccess(adminId);
 
-        Subject subject = subjectRepository.findById(idSubject)
+        Subject subject = subjectRepository.findById(subjectId)
                 .orElseThrow(() -> new GenericAppException(HttpStatus.NOT_FOUND, "Materia no encontrada"));
         Semester semester= semesterRepository.findById(semesterId)
                 .orElseThrow(() -> new GenericAppException(HttpStatus.NOT_FOUND, "El semestre con id "+semesterId+" no existe"));
@@ -95,10 +95,10 @@ public class GroupServiceImpl implements IGroupService {
      * @return Lista de DTOs con horarios incluidos.
      */
     @Override
-    public List<GroupDTO> getAllByDocente(Long idUser, Long adminId, Long semesterId) {
+    public List<GroupDTO> getAllByDocente(Long docenteId, Long adminId, Long semesterId) {
         validateAdminAccess(adminId);
 
-        User docente = getUserById(idUser);
+        User docente = getUserById(docenteId);
         Semester semester= semesterRepository.findById(semesterId)
                 .orElseThrow(() -> new GenericAppException(HttpStatus.NOT_FOUND, "El semestre con id "+semesterId+" no existe"));
 

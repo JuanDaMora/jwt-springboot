@@ -12,8 +12,8 @@ public interface IGroupService {
 
     List<GroupDTO> getAllByLevels(List<Long> idLevel, Long adminId, Long semesterId);
 
-    List<GroupDTO> getAllBySubject(Long idSubject, Long adminId, Long semesterId);
-    List<GroupDTO> getAllByDocente(Long idUser, Long adminId, Long semesterId);
+    List<GroupDTO> getAllBySubject(Long subjectId, Long adminId, Long semesterId);
+    List<GroupDTO> getAllByDocente(Long docenteId, Long adminId, Long semesterId);
 
     Boolean createGroup(GroupCreateDTO dto, Long adminId,Long semesterId);
     Boolean updateGroup(Long groupId, GroupUpdateDTO dto, Long adminId, Long semesterId);

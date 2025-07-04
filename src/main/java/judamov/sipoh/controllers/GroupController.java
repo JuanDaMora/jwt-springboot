@@ -36,19 +36,19 @@ public class GroupController {
 
     @GetMapping("/by-subject")
     public ResponseEntity<List<GroupDTO>> getAllBySubject(
-            @RequestParam Long idSubject,
+            @RequestParam Long subjectId,
             @RequestHeader Long semesterId,
             @RequestHeader Long userId) {
-        List<GroupDTO> groups = groupService.getAllBySubject(idSubject, userId, semesterId);
+        List<GroupDTO> groups = groupService.getAllBySubject(subjectId, userId, semesterId);
         return ResponseEntity.ok(groups);
     }
 
     @GetMapping("/by-docente")
     public ResponseEntity<List<GroupDTO>> getAllByDocente(
-            @RequestParam Long idDocente,
+            @RequestParam Long docenteId,
             @RequestHeader Long semesterId,
             @RequestHeader Long userId) {
-        List<GroupDTO> groups = groupService.getAllByDocente(idDocente, userId, semesterId);
+        List<GroupDTO> groups = groupService.getAllByDocente(docenteId, userId, semesterId);
         return ResponseEntity.ok(groups);
     }
 
