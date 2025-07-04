@@ -11,7 +11,6 @@ import judamov.sipoh.repository.IAreaRepository;
 import judamov.sipoh.repository.ILevelSubjectRepository;
 import judamov.sipoh.repository.ISubjectRepository;
 import judamov.sipoh.repository.IUserRepository;
-import judamov.sipoh.service.interfaces.ILevelSubjectService;
 import judamov.sipoh.service.interfaces.ISubjectService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -38,7 +37,7 @@ public class SubjectServiceImpl implements ISubjectService {
         LevelSubject levelSubject= levelSubjectRepository.findById(subjectCreateDTO.getIdLevel())
                 .orElseThrow(() -> new GenericAppException(HttpStatus.NOT_FOUND, "Nivel subject no encontrado"));
         Subject newSubject= Subject.builder()
-                .codigo(subjectCreateDTO.getCodigo())
+                .codigo(subjectCreateDTO.getCode())
                 .levelSubject(levelSubject)
                 .area(area)
                 .max_students(subjectCreateDTO.getMaxStudents())

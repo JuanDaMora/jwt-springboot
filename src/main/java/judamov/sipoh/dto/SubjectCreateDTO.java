@@ -10,7 +10,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class SubjectCreateDTO {
-    String codigo;
+    String code;
     Long idArea;
     Long idLevel;
     String name;
